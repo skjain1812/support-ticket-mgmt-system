@@ -1,0 +1,17 @@
+{
+  "name": "support-ticket-tests",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Integration tests for Support Ticket Management System API",
+  "scripts": {
+    "test": "jest --runInBand",
+    "test:valid-transitions": "jest --runInBand integration/statusTransitions.valid.test.js",
+    "test:invalid-transitions": "jest --runInBand integration/statusTransitions.invalid.test.js",
+    "test:crud-validation": "jest --runInBand integration/ticketCrud.validation.test.js",
+    "test:comments": "jest --runInBand integration/comments.creation.test.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}

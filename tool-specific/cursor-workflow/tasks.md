@@ -54,11 +54,11 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| 4.1 | Integration tests: valid status transitions | ☐ | All 5 valid paths |
-| 4.2 | Integration tests: invalid status transitions | ☐ | At least 5 invalid cases |
-| 4.3 | Integration tests: ticket CRUD validation | ☐ | Missing title, etc. |
-| 4.4 | Integration tests: comment creation | ☐ | Missing message |
-| 4.5 | Record results in `test-results.md` | ☐ | |
+| 4.1 | Integration tests: valid status transitions | ☑ | All 5 valid paths |
+| 4.2 | Integration tests: invalid status transitions | ☑ | At least 5 invalid cases |
+| 4.3 | Integration tests: ticket CRUD validation | ☑ | Missing title, etc. |
+| 4.4 | Integration tests: comment creation | ☑ | Missing message |
+| 4.5 | Record results in `test-results.md` | ☑ | |
 
 ---
 
@@ -93,6 +93,6 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 
 _Update this section with what you are working on right now._
 
-**Active task:** _4.1 — Integration tests: valid status transitions_
+**Active task:** _5.1 — Self code review → code-review-notes.md_
 
 **Blockers:** _None_
