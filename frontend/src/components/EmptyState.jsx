@@ -1,8 +1,8 @@
 function EmptyState({ message, action }) {
   return (
-    <div className="empty-state card">
+    <div className="empty-state card" role="status">
       <p>{message}</p>
-      {action}
+      {action && <div className="state-actions">{action}</div>}
     </div>
   );
 }

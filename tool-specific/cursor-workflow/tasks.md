@@ -39,14 +39,14 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| 3.1 | Ticket list page with search and status filter | ☐ | `/tickets` |
-| 3.2 | Create ticket form | ☐ | `/tickets/new` |
-| 3.3 | Ticket detail page | ☐ | `/tickets/:id` |
-| 3.4 | Update ticket fields on detail page | ☐ | |
-| 3.5 | Status change UI (valid options only) | ☐ | Show error on invalid |
-| 3.6 | Assignee dropdown (from seed users) | ☐ | |
-| 3.7 | Comments section — list + add form | ☐ | |
-| 3.8 | Loading, empty, and error states | ☐ | All pages |
+| 3.1 | Ticket list page with search and status filter | ☑ | `/tickets` |
+| 3.2 | Create ticket form | ☑ | `/tickets/new` |
+| 3.3 | Ticket detail page | ☑ | `/tickets/:id` |
+| 3.4 | Update ticket fields on detail page | ☑ | |
+| 3.5 | Status change UI (valid options only) | ☑ | Show error on invalid |
+| 3.6 | Assignee dropdown (from seed users) | ☑ | |
+| 3.7 | Comments section — list + add form | ☑ | |
+| 3.8 | Loading, empty, and error states | ☑ | All pages |
 
 ---
 
@@ -93,6 +93,6 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 
 _Update this section with what you are working on right now._
 
-**Active task:** _[e.g. 2.6 — Implement status transition service]_
+**Active task:** _4.1 — Integration tests: valid status transitions_
 
-**Blockers:** _[None / describe]_
+**Blockers:** _None_

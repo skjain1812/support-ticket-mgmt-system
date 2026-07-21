@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../services/api';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
+import EmptyState from '../components/EmptyState';
 import { PRIORITY_OPTIONS } from '../utils/ticketHelpers';
+import { getErrorMessage } from '../utils/errorMessages';
 
 const initialForm = {
   title: '',
@@ -22,29 +24,32 @@ function CreateTicketPage() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [loadError, setLoadError] = useState('');
+  const [reloadCount, setReloadCount] = useState(0);
+
+  const loadUsers = useCallback(async () => {
+    setLoading(true);
+    setLoadError('');
+
+    try {
+      const response = await api.getUsers();
+      const userList = response.data || [];
+      setUsers(userList);
+      setForm((current) => ({
+        ...initialForm,
+        createdBy: userList[0]?.id || '',
+      }));
+    } catch (err) {
+      setLoadError(
+        getErrorMessage(err, 'Unable to load users. Check if the server is running.')
+      );
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function loadUsers() {
-      try {
-        const response = await api.getUsers();
-        const userList = response.data || [];
-        setUsers(userList);
-        if (userList.length > 0) {
-          setForm((current) => ({ ...current, createdBy: userList[0].id }));
-        }
-      } catch (err) {
-        setLoadError(
-          err instanceof ApiError
-            ? err.message
-            : 'Unable to load users. Check if the server is running.'
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
     loadUsers();
-  }, []);
+  }, [loadUsers, reloadCount]);
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -60,6 +65,11 @@ function CreateTicketPage() {
 
     if (!form.title.trim()) {
       setFieldErrors({ title: 'Title is required' });
+      return;
+    }
+
+    if (!form.createdBy) {
+      setFieldErrors({ createdBy: 'Created by is required' });
       return;
     }
 
@@ -87,7 +97,9 @@ function CreateTicketPage() {
         });
         setFieldErrors(nextErrors);
       } else {
-        setSubmitError('Unable to create ticket. Check if the server is running.');
+        setSubmitError(
+          getErrorMessage(err, 'Unable to create ticket. Check if the server is running.')
+        );
       }
     } finally {
       setSubmitting(false);
@@ -99,20 +111,57 @@ function CreateTicketPage() {
   }
 
   if (loadError) {
-    return <ErrorState message={loadError} />;
+    return (
+      <section>
+        <ErrorState
+          message={loadError}
+          onRetry={() => setReloadCount((count) => count + 1)}
+          action={
+            <Link to="/tickets" className="btn btn-secondary">
+              Back to list
+            </Link>
+          }
+        />
+      </section>
+    );
+  }
+
+  if (users.length === 0) {
+    return (
+      <section>
+        <EmptyState
+          message="No users available. Run the database seed script, then try again."
+          action={
+            <Link to="/tickets" className="btn btn-secondary">
+              Back to list
+            </Link>
+          }
+        />
+      </section>
+    );
   }
 
   return (
     <section>
       <div className="page-header">
-        <h1>Create Ticket</h1>
+        <div>
+          <h1>Create Ticket</h1>
+          <p className="page-subtitle">
+            New tickets start as <strong>open</strong> with <strong>medium</strong> priority by
+            default.
+          </p>
+        </div>
         <Link to="/tickets" className="btn btn-secondary">
           Back to list
         </Link>
       </div>
 
-      <form className="card" onSubmit={handleSubmit}>
-        {submitError && <div className="alert alert-error">{submitError}</div>}
+      <form className="card" onSubmit={handleSubmit} noValidate aria-busy={submitting}>
+        {submitError && (
+          <div className="alert alert-error" role="alert">
+            {submitError}
+          </div>
+        )}
 
         <div className="form-group">
           <label htmlFor="title">Title *</label>
@@ -122,6 +171,10 @@ function CreateTicketPage() {
             value={form.title}
             onChange={handleChange}
             maxLength={200}
+            required
+            autoFocus
+            disabled={submitting}
+            aria-invalid={Boolean(fieldErrors.title)}
           />
           {fieldErrors.title && (
             <span className="form-error">{fieldErrors.title}</span>
@@ -135,7 +188,12 @@ function CreateTicketPage() {
             name="description"
             value={form.description}
             onChange={handleChange}
+            rows={5}
+            disabled={submitting}
           />
+          {fieldErrors.description && (
+            <span className="form-error">{fieldErrors.description}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -145,6 +203,8 @@ function CreateTicketPage() {
             name="priority"
             value={form.priority}
             onChange={handleChange}
+            disabled={submitting}
+            aria-invalid={Boolean(fieldErrors.priority)}
           >
             {PRIORITY_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -152,6 +212,9 @@ function CreateTicketPage() {
               </option>
             ))}
           </select>
+          {fieldErrors.priority && (
+            <span className="form-error">{fieldErrors.priority}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -161,6 +224,9 @@ function CreateTicketPage() {
             name="createdBy"
             value={form.createdBy}
             onChange={handleChange}
+            required
+            disabled={submitting}
+            aria-invalid={Boolean(fieldErrors.createdBy)}
           >
             {users.map((user) => (
               <option key={user.id} value={user.id}>
@@ -168,6 +234,9 @@ function CreateTicketPage() {
               </option>
             ))}
           </select>
+          {fieldErrors.createdBy && (
+            <span className="form-error">{fieldErrors.createdBy}</span>
+          )}
         </div>
 
         <div className="form-group">
@@ -177,6 +246,8 @@ function CreateTicketPage() {
             name="assignedTo"
             value={form.assignedTo}
             onChange={handleChange}
+            disabled={submitting}
+            aria-invalid={Boolean(fieldErrors.assignedTo)}
           >
             <option value="">Unassigned</option>
             {users.map((user) => (
@@ -185,9 +256,12 @@ function CreateTicketPage() {
               </option>
             ))}
           </select>
+          {fieldErrors.assignedTo && (
+            <span className="form-error">{fieldErrors.assignedTo}</span>
+          )}
         </div>
 
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
+        <div className="form-actions">
           <button type="submit" className="btn btn-primary" disabled={submitting}>
             {submitting ? 'Creating...' : 'Create Ticket'}
           </button>
