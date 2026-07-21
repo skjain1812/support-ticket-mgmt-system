@@ -1,0 +1,21 @@
+{
+  "name": "support-ticket-backend",
+  "version": "1.0.0",
+  "description": "Support Ticket Management System API",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "db:init": "node ../database/init-indexes.js",
+    "seed": "node ../database/seed.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "mongoose": "^8.9.5"
+  }
+}

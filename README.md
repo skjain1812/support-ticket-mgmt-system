@@ -32,8 +32,8 @@ support-ticket-mgmt-system/
 ├── final-ai-usage-summary.md
 ├── backend/                      # Express API
 ├── frontend/                     # React SPA
-├── database/                     # Schema, seed data, setup-notes.md
-├── tests/                        # Integration tests (state machine)
+├── database/                     # Index init, seed, setup-notes.md
+├── tests/                        # Integration tests (Phase 4)
 ├── ai-prompts/                   # Prompt history by activity
 └── tool-specific/
     └── cursor-workflow/          # Cursor persistent context
@@ -42,12 +42,14 @@ support-ticket-mgmt-system/
 ## Prerequisites
 
 - Node.js 18+
-- MongoDB 6+ (local or Atlas)
+- MongoDB 6+ (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
 - npm
 
 ## Getting Started
 
-### 1. Clone and install
+### 1. Install dependencies
+
+**macOS / Linux (bash):**
 
 ```bash
 git clone <repository-url>
@@ -55,51 +57,114 @@ cd support-ticket-mgmt-system
 
 cd backend && npm install
 cd ../frontend && npm install
-cd ../tests && npm install
 ```
 
-### 2. Database setup
+**Windows (PowerShell):**
 
-See `database/setup-notes.md` for full instructions.
+```powershell
+git clone <repository-url>
+cd support-ticket-mgmt-system
 
-```bash
-# Configure environment
-cp backend/.env.example backend/.env
-# Edit MONGODB_URI in backend/.env
+cd backend; npm install
+cd ..\frontend; npm install
+```
 
-# Initialize indexes and seed data
+### 2. Configure environment
+
+**Backend** — copy and edit `backend/.env`:
+
+```powershell
 cd backend
+copy .env.example .env
+```
+
+Set `MONGODB_URI` in `backend/.env` (local or Atlas). See `database/setup-notes.md` for Atlas setup.
+
+**Frontend** (optional — defaults work for local dev):
+
+```powershell
+cd frontend
+copy .env.example .env
+```
+
+### 3. Database setup
+
+From the `backend/` folder:
+
+```powershell
 npm run db:init
 npm run seed
 ```
 
-### 3. Start the application
+Expected seed output: `Users: 3`, `Tickets: 5`, `Comments: 4`.
 
-```bash
-# Terminal 1 — Backend
-cd backend && npm run dev
+Full details: `database/setup-notes.md`
 
-# Terminal 2 — Frontend
-cd frontend && npm run dev
+### 4. Start the application
+
+**Terminal 1 — Backend:**
+
+```powershell
+cd backend
+npm run dev
 ```
 
-Open `http://localhost:5173` in your browser.
+Expected: `MongoDB connected` and `API server running on http://localhost:3000`
 
-### 4. Run tests
+**Terminal 2 — Frontend:**
 
-```bash
-cd tests && npm test
+```powershell
+cd frontend
+npm run dev
+```
+
+Open the URL shown in the terminal (usually `http://localhost:5173`).
+
+**Verify backend:**
+
+```powershell
+curl http://localhost:3000/api/health
+```
+
+Expected: `{"status":"ok","service":"support-ticket-api"}`
+
+### 5. Run tests
+
+Integration tests are added in **Phase 4**. Until then, this step is not applicable.
+
+```powershell
+# Coming in Phase 4
+cd tests
+npm test
 ```
 
 ## Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `MONGODB_URI` | MongoDB connection string | `mongodb://localhost:27017/support_tickets` |
-| `API_PORT` | Backend server port | `3000` |
-| `VITE_API_URL` | Backend URL for frontend | `http://localhost:3000/api` |
+| Variable | Location | Description | Example |
+|----------|----------|-------------|---------|
+| `MONGODB_URI` | `backend/.env` | MongoDB connection string | `mongodb://localhost:27017/support_tickets` |
+| `API_PORT` | `backend/.env` | Backend server port | `3000` |
+| `CORS_ORIGIN` | `backend/.env` | Frontend origin for CORS | `http://localhost:5173` |
+| `VITE_API_URL` | `frontend/.env` | Backend API URL | `http://localhost:3000/api` |
 
-Copy `backend/.env.example` to `backend/.env` and fill in values. Never commit `.env`.
+Copy `backend/.env.example` → `backend/.env` and `frontend/.env.example` → `frontend/.env`. Never commit `.env` files.
+
+## Setup Verification Checklist
+
+Use this to confirm the README instructions work on a clean machine:
+
+| Step | Command | Expected result |
+|------|---------|-----------------|
+| Backend install | `cd backend && npm install` | No errors |
+| Frontend install | `cd frontend && npm install` | No errors |
+| Env configured | `backend/.env` exists with `MONGODB_URI` | File present |
+| Indexes | `npm run db:init` (from `backend/`) | `Indexes synced successfully.` |
+| Seed | `npm run seed` (from `backend/`) | `Users: 3`, `Tickets: 5`, `Comments: 4` |
+| Backend start | `npm run dev` (from `backend/`) | Server on port 3000 |
+| Health check | `GET /api/health` | `status: ok` |
+| Frontend start | `npm run dev` (from `frontend/`) | Vite dev server running |
+
+Last verified: 2026-07-21 (Windows, Node.js 22, local MongoDB).
 
 ## Status State Machine
 
@@ -129,10 +194,21 @@ See `acceptance-criteria.md` for the full checklist.
 | Document | Purpose |
 |----------|---------|
 | `tool-workflow.md` | Part A — AI workflow across lifecycle |
+| `database/setup-notes.md` | MongoDB setup and troubleshooting |
 | `tool-specific/cursor-workflow/` | Cursor persistent context and spec |
 | `ai-prompts/` | Prompt history grouped by activity |
 | `api-contract.md` | REST API specification |
 | `data-model.md` | Mongoose schemas and collections |
+
+## Troubleshooting
+
+| Issue | Fix |
+|-------|-----|
+| `ECONNREFUSED :27017` | Start MongoDB locally or use Atlas URI — see `database/setup-notes.md` |
+| `EADDRINUSE :::3000` | Another process uses port 3000; stop it or change `API_PORT` |
+| `Cannot find module 'dotenv'` | Run `npm run db:init` / `npm run seed` from `backend/` only |
+| Frontend can't reach API | Check `VITE_API_URL` and that backend is running |
+| Port 5173 in use | Vite will use the next port (e.g. 5174) — use the URL shown in terminal |
 
 ## License
 

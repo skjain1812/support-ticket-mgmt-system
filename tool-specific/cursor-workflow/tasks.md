@@ -10,12 +10,12 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| 1.1 | Initialize backend (Express, folder structure) | ☐ | `backend/` |
-| 1.2 | Initialize frontend (React + Vite) | ☐ | `frontend/` |
-| 1.3 | Create Mongoose models and index init script | ☐ | `backend/src/models/`, `database/init-indexes.js` |
-| 1.4 | Create seed script (users, sample tickets, comments) | ☐ | `database/seed.js` |
-| 1.5 | Write `database/setup-notes.md` and `.env.example` | ☐ | |
-| 1.6 | Verify README setup instructions end-to-end | ☐ | |
+| 1.1 | Initialize backend (Express, folder structure) | ☑ | `backend/` |
+| 1.2 | Initialize frontend (React + Vite) | ☑ | `frontend/` |
+| 1.3 | Create Mongoose models and index init script | ☑ | `backend/src/models/`, `database/init-indexes.js` |
+| 1.4 | Create seed script (users, sample tickets, comments) | ☑ | `database/seed.js` |
+| 1.5 | Write `database/setup-notes.md` and `.env.example` | ☑ | |
+| 1.6 | Verify README setup instructions end-to-end | ☑ | Verified 2026-07-21; see `test-results.md` |
 
 ---
 

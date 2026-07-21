@@ -2,34 +2,40 @@
  * MongoDB index initialization script.
  * Run: npm run db:init (from backend/)
  *
- * Requires MONGODB_URI in environment (or defaults to local).
+ * Syncs indexes defined on Mongoose models in backend/src/models/.
  */
-const mongoose = require('mongoose');
+const { loadEnv, loadMongoose, loadModels, getMongoUri } = require('./dbScriptUtils');
 
-const MONGODB_URI =
-  process.env.MONGODB_URI || 'mongodb://localhost:27017/support_tickets';
+loadEnv();
+
+const mongoose = loadMongoose();
+const { User, Ticket, Comment } = loadModels();
 
 async function initIndexes() {
-  await mongoose.connect(MONGODB_URI);
+  await mongoose.connect(getMongoUri());
 
-  const db = mongoose.connection.db;
-
-  await db.collection('users').createIndex({ email: 1 }, { unique: true });
-
-  await db.collection('tickets').createIndexes([
-    { key: { status: 1 } },
-    { key: { createdBy: 1 } },
-    { key: { assignedTo: 1 } },
-    { key: { title: 'text', description: 'text' } },
+  const results = await Promise.all([
+    User.syncIndexes(),
+    Ticket.syncIndexes(),
+    Comment.syncIndexes(),
   ]);
 
-  await db.collection('comments').createIndex({ ticketId: 1 });
+  console.log('Indexes synced successfully.');
+  console.log('User indexes dropped:', results[0]);
+  console.log('Ticket indexes dropped:', results[1]);
+  console.log('Comment indexes dropped:', results[2]);
 
-  console.log('Indexes created successfully.');
+  const collections = ['users', 'tickets', 'comments'];
+  for (const name of collections) {
+    const indexes = await mongoose.connection.db.collection(name).indexes();
+    console.log(`\n${name} indexes:`);
+    indexes.forEach((index) => console.log(`  - ${index.name}:`, JSON.stringify(index.key)));
+  }
+
   await mongoose.disconnect();
 }
 
 initIndexes().catch((err) => {
-  console.error('Failed to create indexes:', err);
+  console.error('Failed to create indexes:', err.message);
   process.exit(1);
 });

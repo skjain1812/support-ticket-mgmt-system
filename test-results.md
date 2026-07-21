@@ -49,4 +49,22 @@ _[Paste npm test output here]_
 
 ## Conclusion
 
+### Setup verification (Task 1.6 — 2026-07-21)
+
+| Step | Result | Notes |
+|------|--------|-------|
+| `backend` npm install | Pass | 92 packages, 0 vulnerabilities |
+| `frontend` npm install | Pass | 70 packages, 0 vulnerabilities |
+| `backend/.env` configured | Pass | Copied from `.env.example` |
+| `npm run db:init` | Pass | All collection indexes synced |
+| `npm run seed` | Pass | 3 users, 5 tickets, 4 comments |
+| `npm run dev` (backend) | Pass | MongoDB connected, port 3000 |
+| `GET /api/health` | Pass | `{"status":"ok","service":"support-ticket-api"}` |
+| `npm run dev` (frontend) | Pass | Vite ready (5173 or next available port) |
+| `tests` npm test | Pending | Phase 4 — not implemented yet |
+
+README updated with Windows commands, setup checklist, and troubleshooting.
+
+### Integration / acceptance testing
+
 _[Ready for submission / needs more work — list gaps]_
