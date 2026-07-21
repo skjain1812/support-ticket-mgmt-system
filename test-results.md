@@ -92,6 +92,30 @@ Ran all test suites.
 | Data survives restart | ☑ Pass | MongoDB persistence verified after re-seed |
 | Invalid transition shows error in UI | ☑ Pass | API error surfaced in detail page alert |
 
+## Submission Smoke Test (2026-07-21)
+
+End-to-end API smoke test run before submission. Backend on `http://localhost:3000`, frontend on `http://localhost:5173`.
+
+| Step | Result | Notes |
+|------|--------|-------|
+| `GET /api/health` | ☑ Pass | `{"status":"ok","service":"support-ticket-api"}` |
+| `GET /api/users` | ☑ Pass | 3 seed users returned |
+| `GET /api/tickets?search=password` | ☑ Pass | Matching tickets returned |
+| `GET /api/tickets?status=open` | ☑ Pass | Only open tickets returned |
+| `POST /api/tickets` (valid) | ☑ Pass | HTTP 201, `status: open`, `priority: medium` |
+| `POST /api/tickets` (no title) | ☑ Pass | HTTP 400 validation error |
+| `GET /api/tickets/:id` | ☑ Pass | Ticket + comments array |
+| `PATCH /api/tickets/:id` | ☑ Pass | Title updated (HTTP 200) |
+| `PATCH /api/tickets/:id/status` invalid | ☑ Pass | `open` → `closed` rejected HTTP 400 with `details` |
+| `PATCH /api/tickets/:id/status` valid | ☑ Pass | `open` → `in_progress` HTTP 200 |
+| `POST /api/tickets/:id/comments` | ☑ Pass | HTTP 201, comment on detail GET |
+| Invalid ticket ID | ☑ Pass | HTTP 400 `Invalid ID format` |
+| Missing ticket ID | ☑ Pass | HTTP 404 `Ticket not found` |
+| Frontend dev server | ☑ Pass | HTTP 200 on `http://localhost:5173` |
+| `cd tests && npm test` | ☑ Pass | 30/30 integration tests |
+
+**Smoke test ticket ID:** `6a5f56ba279908ba5945232d` (created during this run; persists in dev DB).
+
 ## Conclusion
 
 ### Setup verification (Task 1.6 — 2026-07-21)
