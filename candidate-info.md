@@ -1,10 +1,10 @@
 # Candidate Information
 
-**Name:** _[Your name]_ / **Role:** _[Your role]_ / **Primary Technology Stack:** React, Node.js, MongoDB
+**Name:** Shubham Jain / **Role:** Associate Technical Lead / **Primary Technology Stack:** React, Node.js, MongoDB
 
 **Primary AI Tool Used:** Cursor / **Project Option Selected:** Support Ticket Management System (Backend-heavy)
 
-**Assessment Start Date:** 2026-07-20 / **Submission Date:** 2026-07-21
+**Assessment Start Date:** 2026-07-14 / **Submission Date:** 2026-07-21
 
 ## Project Summary
 
