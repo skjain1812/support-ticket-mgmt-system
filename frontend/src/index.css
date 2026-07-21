@@ -24,6 +24,15 @@ a:hover {
   text-decoration: underline;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
 button,
 input,
 select,
@@ -198,11 +207,21 @@ button {
 }
 
 .table tbody tr {
-  cursor: pointer;
+  cursor: default;
 }
 
 .table tbody tr:hover {
   background: #f8fafc;
+}
+
+.table-title-link {
+  color: inherit;
+  font-weight: 500;
+}
+
+.table-title-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
 }
 
 .filters {

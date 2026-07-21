@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api, ApiError } from '../services/api';
 import LoadingState from '../components/LoadingState';
@@ -26,30 +26,41 @@ function CreateTicketPage() {
   const [loadError, setLoadError] = useState('');
   const [reloadCount, setReloadCount] = useState(0);
 
-  const loadUsers = useCallback(async () => {
-    setLoading(true);
-    setLoadError('');
-
-    try {
-      const response = await api.getUsers();
-      const userList = response.data || [];
-      setUsers(userList);
-      setForm((current) => ({
-        ...initialForm,
-        createdBy: userList[0]?.id || '',
-      }));
-    } catch (err) {
-      setLoadError(
-        getErrorMessage(err, 'Unable to load users. Check if the server is running.')
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
   useEffect(() => {
-    loadUsers();
-  }, [loadUsers, reloadCount]);
+    let cancelled = false;
+
+    async function run() {
+      setLoading(true);
+      setLoadError('');
+
+      try {
+        const response = await api.getUsers();
+        if (cancelled) return;
+
+        const userList = response.data || [];
+        setUsers(userList);
+        setForm({
+          ...initialForm,
+          createdBy: userList[0]?.id || '',
+        });
+      } catch (err) {
+        if (!cancelled) {
+          setLoadError(
+            getErrorMessage(err, 'Unable to load users. Check if the server is running.')
+          );
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadCount]);
 
   function handleChange(event) {
     const { name, value } = event.target;

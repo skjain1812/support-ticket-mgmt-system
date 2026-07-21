@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../services/api';
 import LoadingState from '../components/LoadingState';
 import ErrorState from '../components/ErrorState';
@@ -10,7 +10,6 @@ import { STATUS_OPTIONS, formatDate } from '../utils/ticketHelpers';
 import { getErrorMessage } from '../utils/errorMessages';
 
 function TicketListPage() {
-  const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -179,11 +178,12 @@ function TicketListPage() {
           </thead>
           <tbody>
             {tickets.map((ticket) => (
-              <tr
-                key={ticket.id}
-                onClick={() => navigate(`/tickets/${ticket.id}`)}
-              >
-                <td>{ticket.title}</td>
+              <tr key={ticket.id}>
+                <td>
+                  <Link to={`/tickets/${ticket.id}`} className="table-title-link">
+                    {ticket.title}
+                  </Link>
+                </td>
                 <td>
                   <StatusBadge status={ticket.status} />
                 </td>

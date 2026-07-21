@@ -66,13 +66,13 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| 5.1 | Self code review → `code-review-notes.md` | ☐ | |
-| 5.2 | Apply fixes → `review-fixes.md` | ☐ | |
-| 5.3 | Document debugging sessions → `debugging-notes.md` | ☐ | |
-| 5.4 | Complete `reflection.md` | ☐ | |
-| 5.5 | Complete `final-ai-usage-summary.md` | ☐ | |
-| 5.6 | Write `pr-description.md` | ☐ | |
-| 5.7 | Fill `candidate-info.md` | ☐ | |
+| 5.1 | Self code review → `code-review-notes.md` | ☑ | |
+| 5.2 | Apply fixes → `review-fixes.md` | ☑ | 8 fixes applied |
+| 5.3 | Document debugging sessions → `debugging-notes.md` | ☑ | |
+| 5.4 | Complete `reflection.md` | ☑ | |
+| 5.5 | Complete `final-ai-usage-summary.md` | ☑ | |
+| 5.6 | Write `pr-description.md` | ☑ | |
+| 5.7 | Fill `candidate-info.md` | ☑ | Name/date placeholders remain |
 
 ---
 
@@ -93,6 +93,6 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 
 _Update this section with what you are working on right now._
 
-**Active task:** _5.1 — Self code review → code-review-notes.md_
+**Active task:** _Phase 5 complete — optional Stretch (Phase 6) or submission prep_
 
 **Blockers:** _None_

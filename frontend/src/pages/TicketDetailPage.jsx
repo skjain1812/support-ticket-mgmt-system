@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api, ApiError } from '../services/api';
 import LoadingState from '../components/LoadingState';
@@ -40,51 +40,68 @@ function TicketDetailPage() {
   const [commentError, setCommentError] = useState('');
   const [commentFieldErrors, setCommentFieldErrors] = useState({});
   const [submittingComment, setSubmittingComment] = useState(false);
-
-  const loadTicket = useCallback(async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const [ticketResponse, usersResponse] = await Promise.all([
-        api.getTicket(id),
-        api.getUsers(),
-      ]);
-      setTicket(ticketResponse);
-      setUsers(usersResponse.data || []);
-      setComments(ticketResponse.comments || []);
-      setForm({
-        title: ticketResponse.title,
-        description: ticketResponse.description || '',
-        priority: ticketResponse.priority,
-        assignedTo: ticketResponse.assignedTo || '',
-      });
-      setCommentAuthor(
-        ticketResponse.createdBy || usersResponse.data?.[0]?.id || ''
-      );
-      setCommentMessage('');
-      setCommentError('');
-      setCommentFieldErrors({});
-      setFieldErrors({});
-      setSaveError('');
-    } catch (err) {
-      if (err instanceof ApiError && err.status === 404) {
-        setError('Ticket not found');
-      } else {
-        setError(
-          getErrorMessage(err, 'Unable to load ticket. Check if the server is running.')
-        );
-      }
-      setTicket(null);
-      setComments([]);
-    } finally {
-      setLoading(false);
-    }
-  }, [id]);
+  const [statusSelection, setStatusSelection] = useState('');
 
   useEffect(() => {
-    loadTicket();
-  }, [loadTicket, reloadCount]);
+    let cancelled = false;
+
+    async function run() {
+      setLoading(true);
+      setError('');
+
+      try {
+        const [ticketResponse, usersResponse] = await Promise.all([
+          api.getTicket(id),
+          api.getUsers(),
+        ]);
+
+        if (cancelled) return;
+
+        setTicket(ticketResponse);
+        setUsers(usersResponse.data || []);
+        setComments(ticketResponse.comments || []);
+        setForm({
+          title: ticketResponse.title,
+          description: ticketResponse.description || '',
+          priority: ticketResponse.priority,
+          assignedTo: ticketResponse.assignedTo || '',
+        });
+        setCommentAuthor(
+          ticketResponse.createdBy || usersResponse.data?.[0]?.id || ''
+        );
+        setCommentMessage('');
+        setCommentError('');
+        setCommentFieldErrors({});
+        setFieldErrors({});
+        setSaveError('');
+        setStatusSelection('');
+      } catch (err) {
+        if (cancelled) return;
+
+        if (
+          err instanceof ApiError &&
+          (err.status === 404 || err.status === 400)
+        ) {
+          setError('Ticket not found');
+        } else {
+          setError(
+            getErrorMessage(err, 'Unable to load ticket. Check if the server is running.')
+          );
+        }
+        setTicket(null);
+        setComments([]);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    run();
+    return () => {
+      cancelled = true;
+    };
+  }, [id, reloadCount]);
 
   async function handleFieldUpdate(updates) {
     if (!ticket) return;
@@ -168,6 +185,7 @@ function TicketDetailPage() {
   async function handleStatusChange(event) {
     const nextStatus = event.target.value;
     if (!ticket || !nextStatus || nextStatus === ticket.status) {
+      setStatusSelection('');
       return;
     }
 
@@ -177,7 +195,9 @@ function TicketDetailPage() {
     try {
       const updated = await api.updateTicketStatus(id, nextStatus);
       setTicket((current) => ({ ...current, ...updated }));
+      setStatusSelection('');
     } catch (err) {
+      setStatusSelection('');
       setSaveError(
         err instanceof ApiError
           ? err.message
@@ -262,7 +282,7 @@ function TicketDetailPage() {
     <section>
       <div className="page-header">
         <div>
-          <h1>{ticket.title}</h1>
+          <h1>{form.title || ticket.title}</h1>
           <div className="detail-badges">
             <StatusBadge status={ticket.status} />
             <PriorityBadge priority={ticket.priority} />
@@ -351,13 +371,12 @@ function TicketDetailPage() {
             {nextStatuses.length > 0 ? (
               <select
                 id="status"
-                key={ticket.status}
-                defaultValue=""
+                value={statusSelection}
                 onChange={handleStatusChange}
                 disabled={saving}
                 aria-label="Change ticket status"
               >
-                <option value="" disabled>
+                <option value="">
                   Change status
                 </option>
                 {nextStatuses.map((status) => (

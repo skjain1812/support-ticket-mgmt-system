@@ -3,6 +3,10 @@ const User = require('../models/User');
 const Comment = require('../models/Comment');
 const AppError = require('../utils/AppError');
 const { isValidObjectId } = require('../utils/objectId');
+const {
+  MESSAGE_MAX_LENGTH,
+  isNonEmptyString,
+} = require('../utils/fieldValidation');
 const { formatComment } = require('./ticket.service');
 
 async function addComment(ticketId, data) {
@@ -11,10 +15,14 @@ async function addComment(ticketId, data) {
   }
 
   const details = [];
-  const message = data.message?.trim();
 
-  if (!message) {
+  if (!isNonEmptyString(data.message)) {
     details.push({ field: 'message', message: 'Message is required' });
+  } else if (data.message.trim().length > MESSAGE_MAX_LENGTH) {
+    details.push({
+      field: 'message',
+      message: `Message must not exceed ${MESSAGE_MAX_LENGTH} characters`,
+    });
   }
 
   if (!data.createdBy) {
@@ -41,7 +49,7 @@ async function addComment(ticketId, data) {
 
   const comment = await Comment.create({
     ticketId,
-    message,
+    message: data.message.trim(),
     createdBy: data.createdBy,
   });
 

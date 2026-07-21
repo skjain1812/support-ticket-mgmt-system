@@ -35,7 +35,13 @@ function validateTransition(fromStatus, toStatus) {
   if (!isValidTransition(fromStatus, toStatus)) {
     throw new AppError(
       `Invalid status transition from '${fromStatus}' to '${toStatus}'`,
-      400
+      400,
+      [
+        {
+          field: 'status',
+          message: `Cannot transition from '${fromStatus}' to '${toStatus}'`,
+        },
+      ]
     );
   }
 }

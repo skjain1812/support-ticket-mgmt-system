@@ -3,6 +3,11 @@ const User = require('../models/User');
 const Comment = require('../models/Comment');
 const AppError = require('../utils/AppError');
 const { isValidObjectId } = require('../utils/objectId');
+const {
+  DESCRIPTION_MAX_LENGTH,
+  isNonEmptyString,
+  trimString,
+} = require('../utils/fieldValidation');
 
 const { PRIORITIES, STATUSES } = Ticket;
 
@@ -68,12 +73,25 @@ function formatComment(comment) {
 
 async function createTicket(data) {
   const details = [];
-  const title = data.title?.trim();
 
-  if (!title) {
+  if (!isNonEmptyString(data.title)) {
     details.push({ field: 'title', message: 'Title is required' });
-  } else if (title.length > 200) {
-    details.push({ field: 'title', message: 'Title must not exceed 200 characters' });
+  } else {
+    const title = data.title.trim();
+    if (title.length > 200) {
+      details.push({ field: 'title', message: 'Title must not exceed 200 characters' });
+    }
+  }
+
+  if (data.description !== undefined && data.description !== null) {
+    if (typeof data.description !== 'string') {
+      details.push({ field: 'description', message: 'description must be a string' });
+    } else if (data.description.trim().length > DESCRIPTION_MAX_LENGTH) {
+      details.push({
+        field: 'description',
+        message: `Description must not exceed ${DESCRIPTION_MAX_LENGTH} characters`,
+      });
+    }
   }
 
   if (!data.createdBy) {
@@ -119,8 +137,11 @@ async function createTicket(data) {
   }
 
   const ticket = await Ticket.create({
-    title,
-    description: data.description?.trim() || '',
+    title: data.title.trim(),
+    description:
+      data.description === undefined || data.description === null
+        ? ''
+        : trimString(data.description),
     priority,
     status: 'open',
     createdBy: data.createdBy,
@@ -146,10 +167,18 @@ async function listTickets({ search, status } = {}) {
     query.status = status;
   }
 
-  const searchTerm = search?.trim();
-  if (searchTerm) {
-    const pattern = new RegExp(escapeRegex(searchTerm), 'i');
-    query.$or = [{ title: pattern }, { description: pattern }];
+  if (search !== undefined && search !== null && search !== '') {
+    if (typeof search !== 'string') {
+      throw new AppError('Validation failed', 400, [
+        { field: 'search', message: 'search must be a string' },
+      ]);
+    }
+
+    const searchTerm = search.trim();
+    if (searchTerm) {
+      const pattern = new RegExp(escapeRegex(searchTerm), 'i');
+      query.$or = [{ title: pattern }, { description: pattern }];
+    }
   }
 
   const tickets = await Ticket.find(query)
@@ -203,18 +232,32 @@ async function updateTicket(id, data) {
   const updates = {};
 
   if (data.title !== undefined) {
-    const title = data.title?.trim();
-    if (!title) {
+    if (!isNonEmptyString(data.title)) {
       details.push({ field: 'title', message: 'Title is required' });
-    } else if (title.length > 200) {
-      details.push({ field: 'title', message: 'Title must not exceed 200 characters' });
     } else {
-      updates.title = title;
+      const title = data.title.trim();
+      if (title.length > 200) {
+        details.push({ field: 'title', message: 'Title must not exceed 200 characters' });
+      } else {
+        updates.title = title;
+      }
     }
   }
 
   if (data.description !== undefined) {
-    updates.description = data.description?.trim() || '';
+    if (data.description !== null && typeof data.description !== 'string') {
+      details.push({ field: 'description', message: 'description must be a string' });
+    } else {
+      const description = data.description === null ? '' : trimString(data.description);
+      if (description.length > DESCRIPTION_MAX_LENGTH) {
+        details.push({
+          field: 'description',
+          message: `Description must not exceed ${DESCRIPTION_MAX_LENGTH} characters`,
+        });
+      } else {
+        updates.description = description;
+      }
+    }
   }
 
   if (data.priority !== undefined) {

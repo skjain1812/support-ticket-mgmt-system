@@ -6,7 +6,7 @@ const STATUSES = ['open', 'in_progress', 'resolved', 'closed', 'cancelled'];
 const ticketSchema = new mongoose.Schema(
   {
     title: { type: String, required: true, maxlength: 200, trim: true },
-    description: { type: String, default: '', trim: true },
+    description: { type: String, default: '', trim: true, maxlength: 5000 },
     priority: {
       type: String,
       enum: PRIORITIES,
