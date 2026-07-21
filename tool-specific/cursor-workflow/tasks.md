@@ -23,15 +23,15 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 
 | # | Task | Status | Notes |
 |---|------|--------|-------|
-| 2.1 | GET /api/users — list seed users | ☐ | For assignee dropdown |
-| 2.2 | POST /api/tickets — create with validation | ☐ | Title required |
-| 2.3 | GET /api/tickets — list with search + status filter | ☐ | Core requirement |
-| 2.4 | GET /api/tickets/:id — detail with comments | ☐ | |
-| 2.5 | PATCH /api/tickets/:id — update fields | ☐ | title, description, priority, assignedTo |
-| 2.6 | Implement status transition service | ☐ | State machine logic |
-| 2.7 | PATCH /api/tickets/:id/status — change status | ☐ | Reject invalid transitions |
-| 2.8 | POST /api/tickets/:id/comments — add comment | ☐ | Message required |
-| 2.9 | Centralized error handling middleware | ☐ | Consistent JSON errors |
+| 2.1 | GET /api/users — list seed users | ☑ | For assignee dropdown |
+| 2.2 | POST /api/tickets — create with validation | ☑ | Title required |
+| 2.3 | GET /api/tickets — list with search + status filter | ☑ | Core requirement |
+| 2.4 | GET /api/tickets/:id — detail with comments | ☑ | |
+| 2.5 | PATCH /api/tickets/:id — update fields | ☑ | title, description, priority, assignedTo |
+| 2.6 | Implement status transition service | ☑ | State machine logic |
+| 2.7 | PATCH /api/tickets/:id/status — change status | ☑ | Reject invalid transitions |
+| 2.8 | POST /api/tickets/:id/comments — add comment | ☑ | Message required |
+| 2.9 | Centralized error handling middleware | ☑ | Consistent JSON errors |
 
 ---
 

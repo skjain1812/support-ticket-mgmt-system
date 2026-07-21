@@ -102,7 +102,9 @@ open ──► in_progress ──► resolved ──► closed
 
 Terminal states: `closed`, `cancelled` — no further transitions.
 
-State machine rules are enforced in the **service layer** (MongoDB does not enforce transitions at the database level).
+**Same-status requests:** treated as a no-op (valid, returns current ticket unchanged).
+
+State machine rules are enforced in `statusTransition.service.js`.
 
 ## Seed Data
 
