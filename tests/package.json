@@ -8,7 +8,10 @@
     "test:valid-transitions": "jest --runInBand integration/statusTransitions.valid.test.js",
     "test:invalid-transitions": "jest --runInBand integration/statusTransitions.invalid.test.js",
     "test:crud-validation": "jest --runInBand integration/ticketCrud.validation.test.js",
-    "test:comments": "jest --runInBand integration/comments.creation.test.js"
+    "test:comments": "jest --runInBand integration/comments.creation.test.js",
+    "test:search-filter": "jest --runInBand integration/ticketSearch.filter.test.js",
+    "test:unit": "jest --runInBand unit/statusTransitions.test.js",
+    "test:request-user": "jest --runInBand integration/requestUser.context.test.js"
   },
   "devDependencies": {
     "jest": "^29.7.0",

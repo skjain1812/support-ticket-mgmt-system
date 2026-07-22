@@ -9,6 +9,14 @@ class ApiError extends Error {
   }
 }
 
+/** Sends request-scoped actor identity when createdBy is known (Core prep for Stretch auth). */
+function actorHeaders(payload = {}) {
+  if (payload.createdBy) {
+    return { 'X-User-Id': payload.createdBy };
+  }
+  return {};
+}
+
 async function request(path, options = {}) {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     headers: {
@@ -50,7 +58,11 @@ export const api = {
   },
   getTicket: (id) => request(`/tickets/${id}`),
   createTicket: (payload) =>
-    request('/tickets', { method: 'POST', body: JSON.stringify(payload) }),
+    request('/tickets', {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: actorHeaders(payload),
+    }),
   updateTicket: (id, payload) =>
     request(`/tickets/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
   updateTicketStatus: (id, status) =>
@@ -62,6 +74,7 @@ export const api = {
     request(`/tickets/${id}/comments`, {
       method: 'POST',
       body: JSON.stringify(payload),
+      headers: actorHeaders(payload),
     }),
 };
 

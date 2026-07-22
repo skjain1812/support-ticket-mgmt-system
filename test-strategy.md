@@ -2,17 +2,16 @@
 
 ## Test Scope
 
-Core requires at least one meaningful test tier: **integration tests for the status state machine**. Additional integration tests for validation are recommended.
+Core requires at least one meaningful test tier: **integration tests for the status state machine**. Additional integration tests for validation, search/filter, and request-scoped identity are included.
 
 ## Unit Tests
 
-**Scope (Stretch / optional for Core):**
-- `isValidTransition(from, to)` pure function
-- Input validation helpers
+**Scope:**
+- `isValidTransition(from, to)` pure function — valid paths, invalid paths, same-status no-op, terminal states
 
-**Location:** `backend/src/__tests__/`
+**Location:** `tests/unit/statusTransitions.test.js`
 
-**Not required for Core completion** but valuable for the state machine logic in isolation.
+**Why:** Fast feedback on state-machine rules without DB; addresses review feedback on isolated transition logic.
 
 ## Component Tests
 
@@ -53,12 +52,24 @@ Core requires at least one meaningful test tier: **integration tests for the sta
 | PATCH /tickets/:id with invalid priority | 400 |
 | GET /tickets/:id non-existent ID | 404 |
 
-### Search/Filter Tests (Recommended)
+### Search/Filter Tests (Implemented)
 
 | Test | Expected |
 |------|----------|
 | GET /tickets?search=password | Returns matching tickets |
 | GET /tickets?status=open | Returns only open tickets |
+| Combined search + status | Intersection of both filters |
+| No search matches | Empty `data` array |
+| Invalid status param | 400 |
+
+### Request User Context Tests (Implemented)
+
+| Test | Expected |
+|------|----------|
+| POST with `X-User-Id` only | 201, `createdBy` from header |
+| Mismatched header vs body | 400 |
+| Header absent, body `createdBy` | 201 (Core compatibility) |
+| Comment with `X-User-Id` | 201, author from header |
 
 ## Edge Case Tests
 
@@ -74,14 +85,17 @@ Core requires at least one meaningful test tier: **integration tests for the sta
 |------|--------|
 | E2E browser tests | Optional Stretch; manual UI testing sufficient for Core |
 | Performance/load tests | Out of assignment scope |
-| Auth tests | No authentication in Core |
+| Full JWT auth tests | Stretch — header prep only in Core |
 | Frontend unit tests | Optional Stretch tier |
 
 ## Running Tests
 
 ```bash
 cd tests
-npm test
+npm test              # all suites (unit + integration)
+npm run test:unit     # unit only
+npm run test:search-filter
+npm run test:request-user
 ```
 
 Record results in `test-results.md`.

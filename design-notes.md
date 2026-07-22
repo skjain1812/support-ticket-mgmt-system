@@ -49,6 +49,18 @@ Controllers handle HTTP; services enforce business rules; models handle DB queri
 
 Per `requirements-analysis.md` clarification #1: a ticket already in status `open` may receive `PATCH /tickets/:id/status` with `status: "open"` again. This is treated as a **no-op** — valid, returns the current ticket unchanged. It is not a lifecycle transition. All cross-status moves still follow `VALID_TRANSITIONS` only. Documented in `data-model.md` and implemented in `isValidTransition()` (`from === to` returns true).
 
+**Alternatives considered**
+
+| Option | Pros | Cons | Decision |
+|--------|------|------|----------|
+| **No-op (chosen)** | Idempotent PATCH; safe for UI double-submit; matches REST idempotency expectations | Callers cannot distinguish "changed" vs "unchanged" without comparing body | **Accepted for Core** — simplest UX; integration tests cover valid same-status |
+| **Strict reject (400)** | Forces explicit intent; no silent success | Breaks dropdown "re-select same value"; noisy for refresh/retry | Rejected — worse frontend ergonomics for little gain |
+| **200 with `changed: false` metadata** | Explicit semantics | Extra API surface not in brief; frontend must handle new field | Deferred — Stretch or v2 if product needs audit trail |
+
+**Request-scoped identity (Core prep for Stretch auth)**
+
+`createdBy` on ticket/comment create is resolved via `X-User-Id` header when present (authoritative). Body `createdBy` remains as fallback for Core seed-user dropdown. Mismatched header vs body returns `400` to prevent spoofing when header is set. See `backend/src/context/requestUser.js` and `api-contract.md`.
+
 ## Database Design
 
 Three collections: `users`, `tickets`, `comments`. See `data-model.md` for Mongoose schemas.

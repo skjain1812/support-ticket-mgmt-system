@@ -10,8 +10,11 @@
 | F-06 | M-06 | Visible focus styles for interactive elements | `frontend/src/index.css` | ☑ Done |
 | F-07 | M-07 | Reset status dropdown after failed transition | `frontend/src/pages/TicketDetailPage.jsx` | ☑ Done |
 | F-08 | M-08 | Treat invalid ticket ID as not found in UI | `frontend/src/pages/TicketDetailPage.jsx` | ☑ Done |
+| F-09 | M-09 | Request-scoped user via `X-User-Id` header | `backend/src/context/requestUser.js`, `tickets.controller.js`, `frontend/src/services/api.js` | ☑ Done |
+| F-10 | m-08 | Search/filter integration tests | `tests/integration/ticketSearch.filter.test.js` | ☑ Done |
+| F-11 | — | Unit tests for `isValidTransition` | `tests/unit/statusTransitions.test.js` | ☑ Done |
 
-_Status: ☑ Done (8 applied) · Deferred items documented in `code-review-notes.md`_
+_Status: ☑ Done (11 applied) · Deferred items documented in `code-review-notes.md`_
 
 ---
 

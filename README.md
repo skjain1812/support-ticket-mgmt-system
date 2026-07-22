@@ -30,7 +30,7 @@ This assignment has a **mandatory Core** and an **optional Stretch**. This repos
 | **State machine** | `open` → `in_progress` → `resolved` → `closed`; `open`/`in_progress` → `cancelled` |
 | **Validation** | Backend rejects invalid input; UI shows error states |
 | **Persistence** | MongoDB — data survives restart |
-| **Tests** | 30 integration tests (state machine mandatory) |
+| **Tests** | 59 automated tests (unit + integration: state machine, CRUD, search/filter, request context) |
 | **Artifacts** | Full lifecycle docs, prompt history, reflection (see [Documentation](#documentation)) |
 
 ### Stretch (Optional) — not implemented
@@ -40,7 +40,7 @@ This assignment has a **mandatory Core** and an **optional Stretch**. This repos
 | Authentication (JWT/session), protected routes | Not in scope for this submission |
 | User CRUD and role management | Not implemented |
 | Filter by priority/assignee, sorting, pagination | Not implemented |
-| Unit tests, E2E tests beyond Core | Not implemented |
+| Unit tests, E2E tests beyond Core | Unit tests for state machine added; E2E not implemented |
 | OpenAPI/Swagger, Docker, CI | Not implemented |
 
 Stretch is bonus evidence only. See `requirements-analysis.md` for full Core vs Stretch breakdown.
@@ -328,15 +328,17 @@ See `acceptance-criteria.md` for the full checklist.
 
 ## Documentation
 
+**Index:** [`docs/README.md`](docs/README.md) — single entry point for all lifecycle artifacts.
+
 | Document | Purpose |
 |----------|---------|
+| `docs/README.md` | Documentation index (planning, design, tests, AI workflow) |
 | `tool-workflow.md` | Part A — AI workflow across lifecycle |
 | `ai-prompts/README.md` | Prompt history index — start here for evaluators |
 | `ai-prompts/iteration-log.md` | Chronological AI session log with accept/change/reject |
 | `database/setup-notes.md` | MongoDB setup and troubleshooting |
 | `tool-specific/cursor-workflow/` | Cursor persistent context and spec |
-| `ai-prompts/` | Prompt history grouped by activity |
-| `api-contract.md` | REST API specification |
+| `api-contract.md` | REST API specification (incl. `X-User-Id` header) |
 | `data-model.md` | Mongoose schemas and collections |
 
 ## Troubleshooting

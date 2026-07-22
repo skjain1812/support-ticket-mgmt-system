@@ -26,7 +26,7 @@ Self-review performed on 2026-07-21 after Core implementation (Phases 1–4). Re
 | M-06 | Frontend a11y | No visible focus styles | **Fixed** — `:focus-visible` styles in `index.css` |
 | M-07 | Frontend UX | Status dropdown did not reset after failed transition | **Fixed** — controlled `statusSelection` state |
 | M-08 | Frontend UX | Malformed ticket IDs showed generic load error | **Fixed** — HTTP 400 treated as “Ticket not found” |
-| M-09 | Auth | Client-supplied `createdBy` on writes (identity spoofing) | **Deferred** — no auth in Core scope; documented for Stretch |
+| M-09 | Auth | Client-supplied `createdBy` on writes (identity spoofing) | **Mitigated** — `X-User-Id` header authoritative; mismatch with body returns 400; Stretch JWT planned |
 | M-10 | Frontend | Concurrent auto-save PATCH requests can race on detail page | **Deferred** — acceptable for Core demo; debounce/queue in Stretch |
 | M-11 | API | No pagination on ticket list | **Deferred** — Stretch per assignment brief |
 
@@ -41,7 +41,7 @@ Self-review performed on 2026-07-21 after Core implementation (Phases 1–4). Re
 | m-05 | Frontend | No React error boundary | Deferred — Stretch |
 | m-06 | Frontend | `getHealth` API helper unused | Deferred — optional startup check |
 | m-07 | Frontend | Wildcard routes redirect silently to `/tickets` | Deferred — minor UX |
-| m-08 | Tests | No automated search/filter integration tests | Deferred — recommended in `test-strategy.md` |
+| m-08 | Tests | No automated search/filter integration tests | **Fixed** — `tests/integration/ticketSearch.filter.test.js` |
 
 ## Changes Made After Review
 
@@ -67,3 +67,5 @@ See `review-fixes.md` for detailed fix log (F-01 through F-08 applied).
 - [x] API responses match `api-contract.md`
 - [x] UI error states for validation and transition failures
 - [x] Integration tests cover valid and invalid transitions
+- [x] Unit tests for `isValidTransition`
+- [x] Integration tests for search/filter and request user context

@@ -4,31 +4,64 @@
 
 | Field | Value |
 |-------|-------|
-| **Date** | 2026-07-22 (last full run); docs updated 2026-07-22 |
-| **Branch / Commit** | `dev` @ `2683dd3` (tests last verified at `b4889e8` — no code changes after) |
+| **Date** | 2026-07-22 |
+| **Branch / Commit** | `dev` (feedback remediation — uncommitted) |
 | **Environment** | Local (Windows, Node.js, MongoDB `support_tickets_test`) |
 | **Command** | `cd tests && npm test` |
-| **Outcome** | **30 / 30 passed** (4 suites) |
+| **Outcome** | **59 / 59 passed** (7 suites) |
 
-## Integration Tests
+## Full Test Run
 
 ```
 > support-ticket-tests@1.0.0 test
 > jest --runInBand
 
+PASS integration/ticketSearch.filter.test.js
+PASS integration/requestUser.context.test.js
+PASS unit/statusTransitions.test.js
 PASS integration/statusTransitions.valid.test.js
-PASS integration/ticketCrud.validation.test.js
 PASS integration/statusTransitions.invalid.test.js
 PASS integration/comments.creation.test.js
+PASS integration/ticketCrud.validation.test.js
 
-Test Suites: 4 passed, 4 total
-Tests:       30 passed, 30 total
+Test Suites: 7 passed, 7 total
+Tests:       59 passed, 59 total
 Snapshots:   0 total
-Time:        3.942 s
+Time:        8.544 s
 Ran all test suites.
 ```
 
-### State Machine Tests — Valid Transitions (Task 4.1)
+### Unit Tests — `isValidTransition` (feedback remediation)
+
+| Test area | Result |
+|-----------|--------|
+| Valid transitions (5 paths) | ☑ Pass |
+| Same-status no-op (all statuses) | ☑ Pass |
+| Invalid transitions (6 paths) | ☑ Pass |
+| Terminal states (closed, cancelled) | ☑ Pass |
+
+### Search / Filter Integration (feedback remediation)
+
+| Test | Result |
+|------|--------|
+| GET /tickets?status=open | ☑ Pass |
+| GET /tickets?status=in_progress | ☑ Pass |
+| GET /tickets?search=password | ☑ Pass |
+| GET /tickets?search=invoice (description) | ☑ Pass |
+| Combined search + status | ☑ Pass |
+| No search matches | ☑ Pass |
+| Invalid status filter | ☑ Pass |
+
+### Request User Context (feedback remediation)
+
+| Test | Result |
+|------|--------|
+| X-User-Id header as createdBy | ☑ Pass |
+| Mismatched header vs body | ☑ Pass |
+| Body fallback when no header | ☑ Pass |
+| X-User-Id on comment create | ☑ Pass |
+
+### State Machine Tests — Valid Transitions
 
 | Test | Result |
 |------|--------|
@@ -38,7 +71,7 @@ Ran all test suites.
 | `in_progress` → `cancelled` | ☑ Pass |
 | `resolved` → `closed` | ☑ Pass |
 
-### State Machine Tests — Invalid Transitions (Task 4.2)
+### State Machine Tests — Invalid Transitions
 
 | Test | Result |
 |------|--------|
@@ -49,7 +82,7 @@ Ran all test suites.
 | `closed` → `open` (invalid) | ☑ Pass |
 | `cancelled` → `in_progress` (invalid) | ☑ Pass |
 
-### Ticket CRUD Validation (Task 4.3)
+### Ticket CRUD Validation
 
 | Test | Result |
 |------|--------|
@@ -65,7 +98,7 @@ Ran all test suites.
 | PATCH /tickets/:id non-existent ticket | ☑ Pass |
 | PATCH /tickets/:id updates allowed fields | ☑ Pass |
 
-### Comment Creation (Task 4.4)
+### Comment Creation
 
 | Test | Result |
 |------|--------|
@@ -78,71 +111,12 @@ Ran all test suites.
 | POST comment success (201 + populated response) | ☑ Pass |
 | GET ticket detail includes new comment | ☑ Pass |
 
-## Manual Testing
-
-| Acceptance Criterion | Result | Notes |
-|---------------------|--------|-------|
-| Create ticket via UI | ☑ Pass | `/tickets/new` — title required, defaults applied |
-| View all tickets | ☑ Pass | `/tickets` lists seeded and created tickets |
-| Ticket detail view | ☑ Pass | `/tickets/:id` — fields and comments shown |
-| Update fields and reassign | ☑ Pass | Title, description, priority, assignee editable |
-| Add comments | ☑ Pass | Comment form on detail page |
-| Keyword search works | ☑ Pass | Search by title/description via URL params |
-| Status filter works | ☑ Pass | Filter dropdown + combined with search |
-| Data survives restart | ☑ Pass | MongoDB persistence verified after re-seed |
-| Invalid transition shows error in UI | ☑ Pass | API error surfaced in detail page alert |
-
-## Submission Smoke Test (2026-07-21)
-
-End-to-end API smoke test run before submission. Backend on `http://localhost:3000`, frontend on `http://localhost:5173`.
-
-| Step | Result | Notes |
-|------|--------|-------|
-| `GET /api/health` | ☑ Pass | `{"status":"ok","service":"support-ticket-api"}` |
-| `GET /api/users` | ☑ Pass | 3 seed users returned |
-| `GET /api/tickets?search=password` | ☑ Pass | Matching tickets returned |
-| `GET /api/tickets?status=open` | ☑ Pass | Only open tickets returned |
-| `POST /api/tickets` (valid) | ☑ Pass | HTTP 201, `status: open`, `priority: medium` |
-| `POST /api/tickets` (no title) | ☑ Pass | HTTP 400 validation error |
-| `GET /api/tickets/:id` | ☑ Pass | Ticket + comments array |
-| `PATCH /api/tickets/:id` | ☑ Pass | Title updated (HTTP 200) |
-| `PATCH /api/tickets/:id/status` invalid | ☑ Pass | `open` → `closed` rejected HTTP 400 with `details` |
-| `PATCH /api/tickets/:id/status` valid | ☑ Pass | `open` → `in_progress` HTTP 200 |
-| `POST /api/tickets/:id/comments` | ☑ Pass | HTTP 201, comment on detail GET |
-| Invalid ticket ID | ☑ Pass | HTTP 400 `Invalid ID format` |
-| Missing ticket ID | ☑ Pass | HTTP 404 `Ticket not found` |
-| Frontend dev server | ☑ Pass | HTTP 200 on `http://localhost:5173` |
-| `cd tests && npm test` | ☑ Pass | 30/30 integration tests |
-
-**Smoke test ticket ID:** `6a5f56ba279908ba5945232d` (created during this run; persists in dev DB).
-
 ## Conclusion
 
-### Setup verification (Task 1.6 — 2026-07-21)
+**Ready for resubmission** from a testing perspective:
 
-| Step | Result | Notes |
-|------|--------|-------|
-| `backend` npm install | Pass | Dependencies installed |
-| `frontend` npm install | Pass | Dependencies installed |
-| `backend/.env` configured | Pass | Copied from `.env.example` |
-| `npm run db:init` | Pass | All collection indexes synced |
-| `npm run seed` | Pass | 3 users, 5 tickets, 4 comments |
-| `npm run dev` (backend) | Pass | MongoDB connected, port 3000 |
-| `GET /api/health` | Pass | `{"status":"ok","service":"support-ticket-api"}` |
-| `npm run dev` (frontend) | Pass | Vite on port 5173 |
-| `tests` npm test | **Pass** | 30 integration tests, 4 suites (Phase 4 complete) |
-
-### Integration / acceptance testing
-
-**Ready for Core submission** from a testing perspective:
-
-- Mandatory state-machine integration tests: **complete** (5 valid + 6 invalid paths)
-- Ticket CRUD validation tests: **complete**
-- Comment creation tests: **complete**
-- Manual UI checks against acceptance criteria: **pass**
-
-**Gaps (optional / Phase 5):**
-
-- Automated search/filter integration tests (recommended in `test-strategy.md`, not required for Core)
-- Unit tests for pure state-machine helper (Stretch)
-- E2E browser automation (Stretch)
+- Mandatory state-machine integration tests: **complete**
+- Unit tests for pure transition helper: **complete** (addresses review feedback)
+- Search/filter integration tests: **complete** (addresses review feedback)
+- Request-scoped user context tests: **complete** (addresses review feedback)
+- Ticket CRUD and comment tests: **complete**

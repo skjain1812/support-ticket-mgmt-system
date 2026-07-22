@@ -13,6 +13,8 @@
 - [x] Backend validation prevents invalid records
 - [x] No secrets committed to the repo
 - [x] State-machine integration tests pass
+- [x] Unit tests for `isValidTransition` pass
+- [x] Search/filter integration tests pass
 
 ## Validation
 

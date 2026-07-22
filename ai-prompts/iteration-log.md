@@ -245,19 +245,48 @@ Require stack: database/init-indexes.js
 
 ---
 
+## Session 10 — Feedback remediation (2026-07-22)
+
+**Phase:** Testing · Implementation · Documentation
+
+**Context:** Received 88/100 with gaps in unit tests, search/filter integration tests, client-trusted `createdBy`, doc discoverability, PO-facing clarifications, and same-status design rationale.
+
+**What I implemented:**
+
+| Feedback item | Action |
+|---------------|--------|
+| Unit tests for `isValidTransition` | Added `tests/unit/statusTransitions.test.js` |
+| Search/filter integration tests | Added `tests/integration/ticketSearch.filter.test.js` |
+| Client-supplied `createdBy` | `backend/src/context/requestUser.js` + `X-User-Id` header; frontend sends header |
+| Docs discoverability | Added `docs/README.md` index; linked from root `README.md` |
+| Same-status no-op trade-off | Expanded `design-notes.md` with alternatives table |
+| PO clarifications | Added open questions table in `requirements-analysis.md` |
+
+**My decision:**
+
+| Item | Decision | Reason |
+|------|----------|--------|
+| Move all markdowns to `/docs` | ❌ Rejected | Would break existing links; index approach is safer |
+| Full JWT auth | ❌ Rejected | Still Stretch; header prep is sufficient mitigation for Core |
+| Unit + integration test additions | ✅ Accepted | Directly addresses review scoring gaps |
+
+**Artifacts updated:** `test-strategy.md`, `test-results.md`, `code-review-notes.md`, `api-contract.md`, `design-notes.md`, `requirements-analysis.md`
+
+---
+
 ## Summary: accept / change / reject counts
 
 | Decision | Count | Examples |
 |----------|-------|---------|
-| ✅ Accepted | 18 | Layered backend, state machine map, integration tests, 8 review fixes |
+| ✅ Accepted | 22 | Layered backend, state machine map, integration tests, feedback remediation |
 | ✏️ Changed | 9 | Field names, phased frontend, import paths, reflection corrections |
-| ❌ Rejected | 11 | Auth in Core, pagination, priority filter, status shortcuts, audit table |
-| ⏸ Deferred | 4 | JWT, pagination, helmet, search integration tests |
+| ❌ Rejected | 12 | Auth in Core, pagination, priority filter, moving all docs to /docs |
+| ⏸ Deferred | 3 | JWT, pagination, helmet |
 
 ## Validation gates used
 
 1. `npm run db:init && npm run seed` — database scripts
 2. `curl` / smoke payloads — API contract compliance
-3. `cd tests && npm test` — 30/30 integration tests
+3. `cd tests && npm test` — 59/59 unit + integration tests
 4. Manual UI walkthrough — acceptance criteria checklist
 5. `git diff` review — no secrets, no Stretch scope creep

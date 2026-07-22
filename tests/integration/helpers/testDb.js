@@ -50,8 +50,8 @@ function patchTicketStatus(ticketId, status) {
   return request(app).patch(`/api/tickets/${ticketId}/status`).send({ status });
 }
 
-function postTicket(payload) {
-  return request(app).post('/api/tickets').send(payload);
+function postTicket(payload, headers = {}) {
+  return request(app).post('/api/tickets').set(headers).send(payload);
 }
 
 function getTicket(ticketId) {
@@ -62,8 +62,19 @@ function patchTicket(ticketId, payload) {
   return request(app).patch(`/api/tickets/${ticketId}`).send(payload);
 }
 
-function postComment(ticketId, payload) {
-  return request(app).post(`/api/tickets/${ticketId}/comments`).send(payload);
+function postComment(ticketId, payload, headers = {}) {
+  return request(app)
+    .post(`/api/tickets/${ticketId}/comments`)
+    .set(headers)
+    .send(payload);
+}
+
+function getTickets(query = {}) {
+  const params = new URLSearchParams();
+  if (query.search) params.set('search', query.search);
+  if (query.status) params.set('status', query.status);
+  const qs = params.toString();
+  return request(app).get(`/api/tickets${qs ? `?${qs}` : ''}`);
 }
 
 async function getTicketStatus(ticketId) {
@@ -89,4 +100,5 @@ module.exports = {
   patchTicket,
   postComment,
   getTicketStatus,
+  getTickets,
 };

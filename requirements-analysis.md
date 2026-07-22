@@ -61,11 +61,23 @@ Users are seed data only in Core — no login, no user-management UI. I also und
 
 ## Clarifications (questions for a product owner)
 
+### Resolved (documented in design)
+
 | # | Question | Resolution |
 |---|----------|------------|
-| 1 | Can the same status transition be a no-op (e.g. open → open)? | Yes — same-status is a no-op; documented in `design-notes.md` and `data-model.md` |
+| 1 | Can the same status transition be a no-op (e.g. open → open)? | Yes — same-status is a no-op; alternatives documented in `design-notes.md` |
 | 2 | Should cancelled tickets be reopenable? | No — cancelled is terminal per state machine |
 | 3 | Is email notification needed? | Out of scope |
+
+### Open questions (would ask PO before production)
+
+| # | Question | Why it matters | Proposed default if unanswered |
+|---|----------|----------------|--------------------------------|
+| 4 | Who may assign tickets — any agent or only team leads? | Affects authorization rules in Stretch | Any seeded agent may assign |
+| 5 | Should search be case-sensitive or support partial word match? | Affects index strategy and UX | Case-insensitive substring (current regex) |
+| 6 | Is `createdBy` client-supplied acceptable without auth? | Security / audit | Core: seed-user dropdown + `X-User-Id` header prep; Stretch: JWT |
+| 7 | Max comments per ticket or rate limits? | Abuse prevention | No limit for Core internal tool |
+| 8 | Should resolved tickets allow new comments only, or block all edits? | Workflow policy | Comments allowed; field edits allowed until closed |
 
 ## Edge Cases
 

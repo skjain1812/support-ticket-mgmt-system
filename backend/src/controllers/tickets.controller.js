@@ -1,9 +1,11 @@
 const ticketService = require('../services/ticket.service');
 const statusTransitionService = require('../services/statusTransition.service');
 const commentService = require('../services/comment.service');
+const { resolveActorUserId } = require('../context/requestUser');
 
 async function createTicket(req, res) {
-  const ticket = await ticketService.createTicket(req.body);
+  const createdBy = resolveActorUserId(req, req.body);
+  const ticket = await ticketService.createTicket({ ...req.body, createdBy });
   res.status(201).json(ticket);
 }
 
@@ -34,7 +36,11 @@ async function changeTicketStatus(req, res) {
 }
 
 async function addComment(req, res) {
-  const comment = await commentService.addComment(req.params.id, req.body);
+  const createdBy = resolveActorUserId(req, req.body);
+  const comment = await commentService.addComment(req.params.id, {
+    ...req.body,
+    createdBy,
+  });
   res.status(201).json(comment);
 }
 

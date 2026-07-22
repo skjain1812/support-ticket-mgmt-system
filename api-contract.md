@@ -6,6 +6,22 @@ Content-Type: `application/json` for all requests and responses.
 
 All `id` fields are MongoDB ObjectIds exposed as 24-character hex strings. The backend must validate ObjectId format on route params and reject invalid IDs with `400`.
 
+### Request-scoped identity (Core prep for Stretch auth)
+
+Write endpoints that accept `createdBy` also honour the optional header:
+
+| Header | Description |
+|--------|-------------|
+| `X-User-Id` | MongoDB ObjectId of the acting user. When present, this value is **authoritative** for `createdBy` on ticket and comment creation. |
+
+Rules:
+
+- If `X-User-Id` is set and body `createdBy` is omitted → header value is used.
+- If both are set and differ → `400` with `createdBy does not match request user context`.
+- If header is absent → body `createdBy` is required (Core seed-user dropdown behaviour).
+
+Implemented in `backend/src/context/requestUser.js`. Frontend sends the header when `createdBy` is selected.
+
 ---
 
 ## Endpoint: List Users
@@ -89,7 +105,7 @@ Created ticket object.
 
 - `title` — required, max 200 characters
 - `priority` — optional, default `medium`; must be valid enum
-- `createdBy` — required, must reference existing user
+- `createdBy` — required unless `X-User-Id` header is set; must reference existing user
 - `assignedTo` — optional, must reference existing user if provided
 - `status` — always set to `open` on create (ignore client value)
 
