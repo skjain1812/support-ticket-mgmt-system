@@ -6,6 +6,10 @@
 
 **Assessment Start Date:** 2026-07-14 / **Submission Date:** 2026-07-21
 
+**Repository:** https://github.com/skjain1812/support-ticket-mgmt-system/tree/dev
+
+**Submission branch:** `dev` (contains the complete Core implementation; `main` is an initial scaffold only)
+
 ## Project Summary
 
 A full-stack Support Ticket Management System for internal support teams. Core features include ticket CRUD, comments, keyword search, status filtering, and an enforced status state machine (`open` → `in_progress` → `resolved` → `closed`, with `cancelled` branches). Users are seed data only (no auth in Core). Built with React, Express, and MongoDB using an AI-assisted, spec-driven workflow with lifecycle artifacts throughout the repository.
@@ -22,7 +26,7 @@ A full-stack Support Ticket Management System for internal support teams. Core f
 
 ## Setup Summary
 
-1. Clone repository and install dependencies (`backend/`, `frontend/`, `tests/`)
+1. Clone the `dev` branch and install dependencies (`backend/`, `frontend/`, `tests/`)
 2. Copy `backend/.env.example` to `backend/.env` and set `MONGODB_URI`
 3. Run index init and seed from `backend/`: `npm run db:init` && `npm run seed`
 4. Start backend (`npm run dev` in `backend/`) and frontend (`npm run dev` in `frontend/`)

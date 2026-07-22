@@ -72,7 +72,7 @@ Ordered task breakdown for the Support Ticket Management System. Update status a
 | 5.4 | Complete `reflection.md` | ☑ | |
 | 5.5 | Complete `final-ai-usage-summary.md` | ☑ | |
 | 5.6 | Write `pr-description.md` | ☑ | |
-| 5.7 | Fill `candidate-info.md` | ☑ | Name/date placeholders remain |
+| 5.7 | Fill `candidate-info.md` | ☑ | Name, dates, and repo URL added |
 
 ---
 

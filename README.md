@@ -8,6 +8,10 @@ Internal support ticket application. Core features: create/list/view/update tick
 
 **Stack:** React (Vite) · Node.js (Express) · MongoDB (Mongoose)
 
+**Repository:** https://github.com/skjain1812/support-ticket-mgmt-system/tree/dev
+
+> **Note:** The complete submission is on the `dev` branch. Clone with `-b dev` (see below).
+
 ## Repository Structure
 
 ```
@@ -52,21 +56,23 @@ support-ticket-mgmt-system/
 **macOS / Linux (bash):**
 
 ```bash
-git clone <repository-url>
+git clone -b dev https://github.com/skjain1812/support-ticket-mgmt-system.git
 cd support-ticket-mgmt-system
 
 cd backend && npm install
 cd ../frontend && npm install
+cd ../tests && npm install
 ```
 
 **Windows (PowerShell):**
 
 ```powershell
-git clone <repository-url>
+git clone -b dev https://github.com/skjain1812/support-ticket-mgmt-system.git
 cd support-ticket-mgmt-system
 
 cd backend; npm install
 cd ..\frontend; npm install
+cd ..\tests; npm install
 ```
 
 ### 2. Configure environment
@@ -130,13 +136,12 @@ Expected: `{"status":"ok","service":"support-ticket-api"}`
 
 ### 5. Run tests
 
-Integration tests are added in **Phase 4**. Until then, this step is not applicable.
-
 ```powershell
-# Coming in Phase 4
 cd tests
 npm test
 ```
+
+Expected: **30 / 30 tests passed** (4 suites). See `test-results.md` for details.
 
 ## Environment Variables
 
