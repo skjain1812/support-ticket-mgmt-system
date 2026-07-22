@@ -6,9 +6,11 @@
 
 ## My Understanding (in your own words)
 
-This is a small internal app for managing support tickets. Support staff create tickets, update them, add comments, search/filter the list, and move tickets through a strict status lifecycle. The hardest part is the state machine — only certain status transitions are allowed, and both backend and frontend must enforce this clearly.
+I chose the Support Ticket Management System because it matches my day-to-day work as an Associate Technical Lead — backend APIs, data modelling, validation, and making business rules explicit in code. The application itself is intentionally small: internal users create tickets, update them, comment, search/filter the list, and move tickets through a fixed lifecycle.
 
-Users exist only as seed data in Core (no login, no user management UI). The focus of the assessment is demonstrating thoughtful AI-assisted engineering across the full lifecycle — planning, design, implementation, testing, debugging, review, and documentation — not building a large application.
+The part I treated as non-negotiable is the **status state machine**. Only five transitions are valid; everything else must fail at the API with a clear error, and the UI must not pretend invalid moves are possible. That is where engineering judgment shows, not in adding auth or pagination for this exercise.
+
+Users are seed data only in Core — no login, no user-management UI. I also understood early that the assessment is not about shipping a large product. It is about showing how I use AI across planning, design, implementation, testing, debugging, review, and documentation, with evidence I reviewed and owned the output. I read the brief and drafted requirements/planning locally from **2026-07-14**; my first git commit was **2026-07-20**, with Core implementation concentrated on **2026-07-21**.
 
 ## Functional Requirements
 
@@ -61,7 +63,7 @@ Users exist only as seed data in Core (no login, no user management UI). The foc
 
 | # | Question | Resolution |
 |---|----------|------------|
-| 1 | Can the same status transition be a no-op (e.g. open → open)? | Treat as invalid or no-op — document in design-notes |
+| 1 | Can the same status transition be a no-op (e.g. open → open)? | Yes — same-status is a no-op; documented in `design-notes.md` and `data-model.md` |
 | 2 | Should cancelled tickets be reopenable? | No — cancelled is terminal per state machine |
 | 3 | Is email notification needed? | Out of scope |
 

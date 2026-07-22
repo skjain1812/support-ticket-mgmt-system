@@ -4,8 +4,8 @@
 
 | Field | Value |
 |-------|-------|
-| **Date** | 2026-07-21 |
-| **Branch / Commit** | `dev` @ `b4889e8` |
+| **Date** | 2026-07-22 (last full run); docs updated 2026-07-22 |
+| **Branch / Commit** | `dev` @ `2683dd3` (tests last verified at `b4889e8` — no code changes after) |
 | **Environment** | Local (Windows, Node.js, MongoDB `support_tickets_test`) |
 | **Command** | `cd tests && npm test` |
 | **Outcome** | **30 / 30 passed** (4 suites) |

@@ -2,7 +2,7 @@
 
 ## What I Built
 
-A full-stack Support Ticket Management System for internal support teams. The Core scope includes:
+I built the full-stack Support Ticket Management System (backend-heavy option) because it reflects the kind of work I do — API design, persistence, validation, and enforcing business rules in the service layer. The Core scope includes:
 
 - **Backend:** Express REST API with MongoDB/Mongoose, layered routes → controllers → services → models
 - **Tickets:** Create, list (search + status filter), view, update fields, enforced status state machine
@@ -30,6 +30,10 @@ The assignment guidance scopes Core implementation at **~8–12 focused hours** 
 
 Stretch features (auth, pagination, Docker, Swagger) were deferred to protect artifact quality. This was an intentional trade-off aligned with the assignment guidance.
 
+### Timeline note
+
+I started the assessment on **2026-07-14** by reading the brief and drafting requirements locally. My first repository commit was on **2026-07-20** (`2d14ea6`); backend, frontend, tests, and review landed on **2026-07-21**; submission docs were finalised on **2026-07-22**. Early `iteration-log.md` session dates reflect planning work before the first commit — commit hashes in later sessions are the authoritative record of implementation.
+
 ## How I Used AI (across the lifecycle)
 
 | Phase | How AI was used | What I validated manually |
@@ -46,10 +50,11 @@ Stretch features (auth, pagination, Docker, Swagger) were deferred to protect ar
 
 ## What AI Helped With Most
 
-- Scaffolding consistent project structure quickly (backend layers, React pages, test helpers)
-- Generating integration test cases aligned with the state machine spec
-- Drafting documentation templates and keeping `tasks.md` progress in sync
-- Identifying validation gaps (type checks, error shape consistency) during review
+Cursor was fastest at **boilerplate I would otherwise write by hand** — Express route wiring, React page scaffolding, Jest/supertest setup, and the first draft of integration tests. For example, the four test suites and `testDb.js` helper came from AI in one session; I then spent real time fixing Jest import paths until `npm test` showed 30/30 green (`f5f0995`).
+
+It was also useful for **documentation structure** — turning my notes into `api-contract.md`, `debugging-notes.md`, and review tables. I did not treat those as finished. I re-read every section against the running app.
+
+Where AI did **not** save me time was the state machine and validation logic. I read `statusTransitions.js` and `statusTransition.service.js` line by line and proved behaviour with integration tests before moving on.
 
 ## What AI Got Wrong
 
@@ -78,11 +83,12 @@ Stretch features (auth, pagination, Docker, Swagger) were deferred to protect ar
 
 ## Reusable Workflow
 
-Artifacts I would carry to a real project:
+On my team I would reuse this pattern immediately:
 
-- `tool-specific/cursor-workflow/` — persistent project context, spec, tasks, acceptance criteria
-- `ai-prompts/` — prompt templates + `iteration-log.md` for audit trail
-- `tool-workflow.md` — documented AI usage patterns across the lifecycle
-- Spec-driven approach: API contract + acceptance criteria before implementation
-- Separate test database with integration tests as the quality gate for business logic
-- **Scope discipline:** keep Core lean; invest saved time in artifacts and honest iteration records
+1. **`tool-specific/cursor-workflow/project-context.md` + `spec.md`** pinned in the repo so every Cursor session starts with the same constraints.
+2. **`api-contract.md` before coding** — I have seen AI invent endpoints; the contract stopped that here.
+3. **`iteration-log.md` (or a short log per PR)** — what I accepted, changed, or rejected from AI, with a commit or test command as proof.
+4. **Integration tests on business rules** — same as I would for pricing rules or approval workflows at work.
+5. **Scope discipline** — I can use AI to go faster, but I still decide what ships. Here that meant saying no to auth and pagination so the lifecycle artifacts stayed honest.
+
+If I mentor someone on AI-assisted delivery, I would show them this repo's **prompt history + test results**, not just the React pages.

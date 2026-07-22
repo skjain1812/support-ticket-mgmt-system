@@ -2,7 +2,9 @@
 
 Chronological record of key Cursor sessions during the Support Ticket Management System assignment. Each entry shows the prompt intent, AI output summary, my decision, and where the result landed.
 
-**Period:** 2026-07-14 – 2026-07-21 · **Branch:** `dev` · **Tool:** Cursor
+**Period:** 2026-07-14 – 2026-07-22 · **Branch:** `dev` · **Tool:** Cursor
+
+> **Date note:** Sessions 1–3 are planning/design work done before the first git commit (`2d14ea6` on 2026-07-20). Sessions 4–9 align with implementation commits on 2026-07-21–22. Where a commit hash is listed, it is authoritative.
 
 ---
 

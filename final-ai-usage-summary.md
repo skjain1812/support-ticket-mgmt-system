@@ -93,13 +93,10 @@ Full chronological log: [`ai-prompts/iteration-log.md`](ai-prompts/iteration-log
 
 ## Honest Assessment
 
-AI significantly accelerated scaffolding and test generation — the project structure, API layers, and 30 integration tests would have taken much longer manually. The areas requiring the most human judgment were:
+I used Cursor heavily — probably **60–70% of the initial code and test scaffolding** came from AI drafts. I am comfortable saying that because I also changed or rejected a meaningful share of what it suggested (see the accept/change/reject table above). The parts I fully own without hesitation are: the state machine rules, the decision to keep auth out of Core, the `dbScriptUtils.js` fix after a real `dotenv` failure, and the eight review fixes in `review-fixes.md`.
 
-1. **Scope control** — rejecting auth, pagination, and over-scoped prompts to protect artifact time
-2. **State machine validation** — verifying transitions match the brief exactly
-3. **Environment-specific debugging** — Windows paths, MongoDB setup, Jest module resolution
-4. **Honest documentation** — correcting AI drafts that claimed features outside Core scope
+If you asked me in a coaching session to walk through the code, I would start in `statusTransition.service.js` and `statusTransitions.js`, then show `tests/integration/statusTransitions.invalid.test.js` — because that is the brief's signature requirement. I would not need to open AI chat history to explain those files.
 
-I understand the final code: status transition logic lives in `statusTransition.service.js` + `statusTransitions.js`, validation is in services (not routes), and the frontend mirrors backend rules via `getNextStatuses()`. AI occasionally over-scoped or under-specified paths, but each issue was caught through running commands and tests rather than accepting output blindly.
+What I would do differently next time: log each Cursor session **on the same day** instead of consolidating into `iteration-log.md` near submission, and add integration tests for search/filter when I first built the list API (I deferred that and noted it in review).
 
-The prompt history in `ai-prompts/` is not just templates — `iteration-log.md` records what actually happened, what I changed, and why. That iteration evidence is the primary deliverable alongside the working Core application.
+The prompt history is not decoration. `iteration-log.md` plus `debugging-notes.md` are how I prove I reviewed AI output rather than copy-pasting it. The working app matters, but the brief is clear that the **journey** matters too — that is what I optimised for after Core was stable.

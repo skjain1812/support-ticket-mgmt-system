@@ -45,6 +45,10 @@ const VALID_TRANSITIONS = {
 
 Controllers handle HTTP; services enforce business rules; models handle DB queries.
 
+### Same-status requests (clarification)
+
+Per `requirements-analysis.md` clarification #1: a ticket already in status `open` may receive `PATCH /tickets/:id/status` with `status: "open"` again. This is treated as a **no-op** — valid, returns the current ticket unchanged. It is not a lifecycle transition. All cross-status moves still follow `VALID_TRANSITIONS` only. Documented in `data-model.md` and implemented in `isValidTransition()` (`from === to` returns true).
+
 ## Database Design
 
 Three collections: `users`, `tickets`, `comments`. See `data-model.md` for Mongoose schemas.
