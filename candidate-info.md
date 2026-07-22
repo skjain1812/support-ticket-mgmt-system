@@ -10,6 +10,8 @@
 
 **Submission branch:** `dev` (contains the complete Core implementation; `main` is an initial scaffold only)
 
+**Prompt history:** [`ai-prompts/README.md`](ai-prompts/README.md) · [`ai-prompts/iteration-log.md`](ai-prompts/iteration-log.md)
+
 ## Project Summary
 
 A full-stack Support Ticket Management System for internal support teams. Core features include ticket CRUD, comments, keyword search, status filtering, and an enforced status state machine (`open` → `in_progress` → `resolved` → `closed`, with `cancelled` branches). Users are seed data only (no auth in Core). Built with React, Express, and MongoDB using an AI-assisted, spec-driven workflow with lifecycle artifacts throughout the repository.
@@ -44,7 +46,7 @@ See `README.md` and `database/setup-notes.md` for full instructions.
 | Test results | `test-results.md` | Complete |
 | API contract | `api-contract.md` | Complete |
 | Acceptance criteria | `acceptance-criteria.md` | Met (Core) |
-| AI workflow docs | `tool-workflow.md`, `ai-prompts/`, `tool-specific/cursor-workflow/` | Complete |
+| AI workflow docs | `tool-workflow.md`, `ai-prompts/` (incl. `iteration-log.md`), `tool-specific/cursor-workflow/` | Complete |
 | Code review | `code-review-notes.md`, `review-fixes.md` | Complete |
 | Reflection | `reflection.md`, `final-ai-usage-summary.md` | Complete |
 | PR description | `pr-description.md` | Complete |

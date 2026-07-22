@@ -1,13 +1,13 @@
 # Implementation Prompts
 
-Reusable prompts for building the Support Ticket Management System.
+Reusable prompts for building the Support Ticket Management System. **Recorded sessions** show real iteration.
 
 ---
 
-## Prompt 1: Backend Project Setup
+## Prompt 1: Backend Project Setup (Core — used)
 
 ```
-Set up the backend for a Support Ticket Management System in the backend/ folder.
+Set up the backend for a Support Ticket Management System in backend/.
 
 Requirements:
 - Node.js with Express
@@ -18,151 +18,129 @@ Requirements:
 - CORS configured for frontend origin
 - Health check endpoint: GET /api/health
 
-Do not add unnecessary dependencies. Include a package.json with dev script.
+Do not add unnecessary dependencies. Include package.json with dev script.
 ```
 
 ---
 
-## Prompt 2: Database Migrations
+## Prompt 2: Database Setup (Core — used)
 
 ```
-Create database setup for the Support Ticket Management System in database/.
+Create database setup in database/.
 
 Schema per data-model.md (Mongoose):
-- User model: name, email, role
-- Ticket model: title, description, priority, status, assignedTo, createdBy, timestamps
-- Comment model: ticketId, message, createdBy, createdAt
+- User, Ticket, Comment models in backend/src/models/
+- database/init-indexes.js — indexes including text index for search
+- database/seed.js — 3 users, 5 tickets, 4 comments
+- npm scripts: db:init, seed (run from backend/)
 
-Include:
-1. Mongoose models in backend/src/models/
-2. database/init-indexes.js — indexes including text index for search
-3. database/seed.js — seed users, tickets, comments
-4. npm scripts: db:init, seed
-
-Validate ObjectId references in service layer. No auth/password in Core.
+Scripts must resolve modules from backend/node_modules (see dbScriptUtils.js pattern).
+No auth/password in Core.
 ```
 
 ---
 
-## Prompt 3: Comments API
+## Prompt 3: Comments API (Core — used)
 
 ```
-Implement comment endpoints for the Support Ticket Management System backend.
+Implement comment endpoints per api-contract.md.
 
-Endpoints:
-- POST /api/tickets/:id/comments — add comment (message required, createdBy required)
+- POST /api/tickets/:id/comments — message required, createdBy required
 - Comments included in GET /api/tickets/:id response
 
-Requirements:
-- message is required and non-empty (400 if missing)
-- createdBy must reference existing seed user
-- Return 404 if ticket not found
-- Comments ordered by createdAt ascending on detail view
-
-Follow api-contract.md for request/response shapes.
-No authentication in Core — createdBy comes from request body.
+Validate: message non-empty, createdBy references seed user, ticket exists.
+No authentication in Core.
 ```
 
 ---
 
-## Prompt 4: Ticket CRUD API
+## Prompt 4: Ticket CRUD API (Core — used)
 
 ```
-Implement ticket CRUD endpoints in the backend per api-contract.md.
+Implement ticket endpoints per api-contract.md.
 
-Endpoints:
-- GET /api/tickets — list with keyword search and status filter (Core)
-- POST /api/tickets — create (title required, default status: open, default priority: medium)
-- GET /api/tickets/:id — single ticket with comments and user names populated
-- PATCH /api/tickets/:id — update title, description, priority, assignedTo (NOT status)
-- PATCH /api/tickets/:id/status — change status via state machine only
+- GET /api/tickets — keyword search + status filter
+- POST /api/tickets — title required; defaults: open, medium
+- GET /api/tickets/:id — detail with comments populated
+- PATCH /api/tickets/:id — title, description, priority, assignedTo (NOT status)
+- PATCH /api/tickets/:id/status — state machine only
 
-State machine (Core):
-- open → in_progress, cancelled
-- in_progress → resolved, cancelled
-- resolved → closed
-- All other transitions → 400
-
-No authentication in Core. Users are seed data referenced by ID.
-
-Separate concerns: routes → controllers → services → models.
+Enforce transitions in statusTransition.service.js. Invalid → 400 with details array.
+Separate: routes → controllers → services → models.
 ```
 
 ---
 
-## Prompt 5: Ticket Assignment
+## Prompt 5: Ticket Assignment (Stretch — not used)
 
 ```
-Implement ticket assignment for the Support Ticket Management System.
-
-Endpoints:
-- PATCH /api/tickets/:id/assign — admin only, body: { assigneeId }
-- GET /api/users — admin only, list all users
-
-Requirements:
-- Verify assigneeId references an existing user with role 'agent'
-- Return updated ticket with assignee name populated
-- Return 403 if non-admin tries to assign
-- Return 400 if assigneeId is invalid
-
-Follow docs/api-contract.md.
+[STRETCH] Admin-only assignment endpoint with role checks.
+Core uses PATCH /api/tickets/:id with assignedTo field instead.
+GET /api/users lists all seed users for dropdown — no auth required in Core.
 ```
 
 ---
 
-## Prompt 6: Frontend Setup
+## Prompt 6: Frontend Setup (Core — used)
 
 ```
-Set up the React frontend in frontend/ for the Support Ticket Management System (Core).
+Set up React frontend in frontend/ (Core).
 
-Requirements:
-- Vite + React
-- React Router for navigation
-- API service layer (fetch or axios wrapper)
-- No authentication in Core — no login page
-
-Pages to scaffold:
-- /tickets (list)
-- /tickets/new (create)
-- /tickets/:id (detail with comments)
-
-Environment variable: VITE_API_URL
+- Vite + React, React Router
+- API service layer in services/api.js
+- No login page (seed users only)
+- Pages: /tickets, /tickets/new, /tickets/:id
+- VITE_API_URL environment variable
 ```
 
 ---
 
-## Prompt 7: Frontend Ticket Pages
+## Prompt 7: Frontend Ticket Pages (Core — used, phased)
 
 ```
-Implement the ticket UI pages for the Support Ticket Management System frontend.
+Implement ticket UI per ui-flow.md and tasks.md phases:
 
-Pages per docs/ui-flow.md:
+1. Ticket List — search + status filter (Core only; no priority filter)
+2. Create Ticket — title required, defaults on submit
+3. Ticket Detail — phased: read-only → field edits → status selector → comments
 
-1. Ticket List (/tickets)
-   - Table with title, status badge, priority badge, assignee, date
-   - Filter dropdowns for status and priority
-   - Search input (debounced)
-   - "Create Ticket" button
-   - Click row → navigate to detail
-
-2. Create Ticket (/tickets/new)
-   - Form: title (required), description, priority dropdown
-   - Submit → POST /api/tickets → redirect to detail
-
-3. Ticket Detail (/tickets/:id)
-   - Display all ticket fields; editable title, description, priority, assignee
-   - Status dropdown with valid transitions only (PATCH /api/tickets/:id/status)
-   - Comments list + add comment form
-   - Show clear error on invalid status transition
-
-Handle loading, empty, and error states.
+Status dropdown shows valid next statuses only (mirror backend rules).
+Handle loading, empty, and error states on all pages.
 ```
+
+---
+
+## Recorded Session — Backend status endpoint (2026-07-21)
+
+**Prompt used:** Prompt 4
+
+**AI suggested:** Status change on general PATCH /tickets/:id.
+
+**My decision:** ✏️ Changed — separate `PATCH /:id/status` per api-contract.md.
+
+**Validated:** Integration tests for valid/invalid transitions.
+
+**Commit:** `47e51a0`. See `iteration-log.md` Session 4.
+
+---
+
+## Recorded Session — Frontend phasing (2026-07-21)
+
+**Prompt used:** Prompt 7
+
+**AI suggested:** All-in-one detail page + priority filter on list.
+
+**My decision:**
+- ✏️ Phased detail page per tasks.md 3.3–3.7
+- ❌ Rejected priority filter (Stretch)
+
+**Commit:** `b4889e8`. See `iteration-log.md` Session 6.
 
 ---
 
 ## Usage Notes
 
 - Implement backend before frontend for each feature.
-- Test each endpoint with curl/Postman before wiring the UI.
-- Commit after each prompt's output is verified working.
-- Reference docs/api-contract.md and docs/data-model.md — do not deviate without updating docs.
+- Test each endpoint with curl before wiring UI.
+- Reference `api-contract.md` and `data-model.md` — update docs if implementation diverges.
+- Log sessions in `iteration-log.md`.

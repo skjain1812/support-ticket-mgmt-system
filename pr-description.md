@@ -55,7 +55,7 @@ Implement the Core Support Ticket Management System: ticket CRUD, comments, keyw
 
 ## AI Usage Summary
 
-Built using Cursor with spec-driven workflow. Persistent context in `tool-specific/cursor-workflow/`, prompt history in `ai-prompts/`, lifecycle documented in `tool-workflow.md`, `reflection.md`, and `final-ai-usage-summary.md`. Self-review in `code-review-notes.md`; 8 fixes applied per `review-fixes.md`.
+Built using Cursor with spec-driven workflow. Persistent context in `tool-specific/cursor-workflow/`, prompt history in `ai-prompts/` (start at `ai-prompts/README.md` and `ai-prompts/iteration-log.md`), lifecycle documented in `tool-workflow.md`, `reflection.md`, and `final-ai-usage-summary.md`. Self-review in `code-review-notes.md`; 8 fixes applied per `review-fixes.md`.
 
 ## Screenshots / Demo Notes
 

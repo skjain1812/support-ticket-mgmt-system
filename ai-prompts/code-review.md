@@ -1,150 +1,143 @@
 # Code Review Prompts
 
-Reusable prompts for reviewing code quality and security.
+Reusable prompts for reviewing code quality. **Recorded sessions** show the self-review that produced 8 fixes.
+
+> Prompt 2 (JWT security) adapted for Core — no auth endpoints to review.
 
 ---
 
-## Prompt 1: Full Codebase Review
+## Prompt 1: Full Codebase Review (Core — used)
 
 ```
-Perform a code review of the Support Ticket Management System.
+Perform a code review of the Support Ticket Management System (Core).
 
-Review scope: [backend / frontend / full codebase]
+Review scope: backend/src/, frontend/src/, tests/integration/
 
 Check against:
-1. docs/requirements-analysis.md — are all Must-have requirements implemented?
-2. docs/api-contract.md — do endpoints match the contract?
-3. docs/acceptance-criteria.md — can each criterion be verified?
-4. docs/design-notes.md — architecture and security guidelines followed?
+1. requirements-analysis.md — Core requirements implemented?
+2. api-contract.md — endpoints match contract?
+3. acceptance-criteria.md — each criterion verifiable?
+4. design-notes.md — state machine and validation rules followed?
 
-Categorize findings as:
-- Critical (must fix)
-- Major (should fix)
-- Minor (nice to fix)
-- Suggestions (optional improvements)
-
-Format output for docs/code-review-notes.md.
+Categorize: Critical / Major / Minor / Suggestions
+Format for code-review-notes.md.
+Do not require auth, pagination, or Stretch features.
 ```
 
 ---
 
-## Prompt 2: Security Review
+## Prompt 2: Security Review (Core — adapted)
 
 ```
-Review the Support Ticket Management System for security issues.
+Review Core security (no auth in scope):
 
-Focus areas:
-1. Authentication — JWT handling, token storage, expiry
-2. Authorization — role checks on all protected endpoints
-3. Input validation — server-side validation on all inputs
-4. NoSQL injection — validate ObjectId format; use Mongoose query builders
-5. Password storage — bcrypt hashing, no plaintext
-6. Secrets — no hardcoded credentials or JWT secrets
-7. CORS — restricted to frontend origin
-8. Error messages — no stack traces or internal details leaked to client
+1. Input validation — server-side on all inputs
+2. NoSQL injection — ObjectId format validation
+3. Secrets — no hardcoded credentials; .env gitignored
+4. CORS — restricted to frontend origin
+5. Error messages — no stack traces to client
+6. JSON body size limit
 
-List each finding with severity and recommended fix.
+Skip: JWT, password hashing, role-based route guards (Stretch).
 ```
 
 ---
 
-## Prompt 3: Backend Code Quality
+## Prompt 3: Backend Code Quality (Core — used)
 
 ```
-Review the backend code in backend/src/ for quality issues.
+Review backend/src/ for:
+1. routes → controllers → services → models separation
+2. State machine in service layer (not routes)
+3. Consistent AppError with { error, details }
+4. No business logic in route handlers
+5. Environment variables for config
 
-Check:
-1. Separation of concerns (routes → controllers → services → models)
-2. Error handling — all async operations wrapped, consistent error responses
-3. No business logic in route handlers
-4. DRY — no duplicated validation or query logic
-5. Naming consistency
-6. No dead code or commented-out blocks
-7. Environment variables for all configuration
-
-Provide specific file/line references for each finding.
+Provide file references for each finding.
 ```
 
 ---
 
-## Prompt 4: Frontend Code Quality
+## Prompt 4: Frontend Code Quality (Core — used)
 
 ```
-Review the frontend code in frontend/src/ for quality issues.
+Review frontend/src/ for:
+1. Loading, empty, error states on data-fetching pages
+2. API calls in services/api.js
+3. Status dropdown shows valid transitions only
+4. Form validation before submit
+5. Accessibility: keyboard navigation, focus styles
 
-Check:
-1. Component structure — reusable, single responsibility
-2. State management — no unnecessary global state
-3. API calls centralized in services/ layer
-4. Loading, error, and empty states handled
-5. Form validation before API calls
-6. No hardcoded API URLs
-7. Protected routes and role guards working
-8. Accessibility basics (labels, button types, semantic HTML)
-
-Provide specific file/line references for each finding.
+Skip: protected routes, role guards (Stretch).
 ```
 
 ---
 
-## Prompt 5: API Contract Compliance
+## Prompt 5: API Contract Compliance (Core — used)
 
 ```
-Compare the implemented API endpoints against docs/api-contract.md.
+Compare implemented endpoints against api-contract.md.
 
-For each endpoint, verify:
-1. HTTP method and path match
-2. Request body/query params match
-3. Success response shape and status code match
-4. Error responses (400, 401, 403, 404) implemented
-5. Auth requirements enforced
-
-List any deviations with recommendation: fix code or update contract.
+Verify method, path, request/response shapes, error codes.
+List deviations: fix code or update contract.
 ```
 
 ---
 
-## Prompt 6: Generate Fix Plan
+## Prompt 6: Generate Fix Plan (Core — used)
 
 ```
-Based on the code review findings in docs/code-review-notes.md, create a fix plan.
+Based on code-review-notes.md Major findings, create fix plan.
 
-For each finding (Critical and Major only):
-1. Assign a fix ID (F-01, F-02, ...)
-2. Describe the change needed
-3. List files to modify
-4. Define how to verify the fix
+For each Major item:
+- Fix ID (F-01, F-02, ...)
+- Description, files, verification step
 
-Format for docs/review-fixes.md. Mark deferred items with justification.
+Defer Stretch items with justification.
+Format for review-fixes.md.
 ```
 
 ---
 
-## Prompt 7: Post-Fix Verification
+## Prompt 7: Post-Fix Verification (Core — used)
 
 ```
-I applied fixes from docs/review-fixes.md. Verify the fixes are correct.
+Applied fixes F-01 through F-08. Verify:
+1. Each fix addresses original finding
+2. npm test still passes (30/30)
+3. No regressions
 
-Changes made:
-[Describe or paste diff summary]
-
-Original findings:
-[Paste from code-review-notes.md]
-
-Check:
-1. Each fix addresses the original finding
-2. No new issues introduced
-3. Tests still pass
-4. No regressions in related functionality
-
-Update review-fixes.md status and note any remaining issues.
+Update review-fixes.md status.
 ```
+
+---
+
+## Recorded Session — Self-review and 8 fixes (2026-07-21)
+
+**Prompts used:** 1, 3, 4, 6, 7
+
+**AI findings (Major):**
+- M-01: Non-string inputs → HTTP 500
+- M-02: No max length on text fields
+- M-03: Transition errors missing `details`
+- M-04: No JSON body size limit
+- M-05–M-08: Frontend a11y and UX issues
+
+**My decisions:**
+- ✅ Fixed F-01 through F-08 (all Major Core items)
+- ⏸ Deferred M-09 (client `createdBy` spoofing) — no auth in Core
+- ⏸ Deferred M-11 (pagination) — Stretch
+
+**Validated:** `npm test` 30/30 after fixes.
+
+**Artifacts:** `code-review-notes.md`, `review-fixes.md`
+
+**Commit:** `4335fb1`. See `iteration-log.md` Session 8.
 
 ---
 
 ## Usage Notes
 
-- Run a full review before final submission.
-- Address all Critical and Major findings before submitting.
-- Use Prompt 6 to track fixes systematically in `docs/review-fixes.md`.
-- Self-review counts — document findings honestly even for your own code.
+- Run full review after Core implementation, before submission.
+- Address Critical and Major findings; defer Stretch with documented reason.
+- Honest self-review counts — document findings even for your own code.

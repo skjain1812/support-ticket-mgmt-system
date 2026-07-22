@@ -1,149 +1,137 @@
 # Documentation Prompts
 
-Reusable prompts for generating and updating project documentation.
+Reusable prompts for generating project documentation. **Recorded sessions** show submission prep.
 
 ---
 
-## Prompt 1: README Update
+## Prompt 1: README Update (Core — used)
 
 ```
-Update the root README.md for the Support Ticket Management System.
-
-The application is now implemented with:
-- Backend: [e.g. Express on port 3000]
-- Frontend: [e.g. React/Vite on port 5173]
-- Database: MongoDB (Mongoose)
-
-Include accurate:
-1. Prerequisites and versions
-2. Step-by-step setup (clone, install, env vars, migrate, seed, run)
-3. Environment variable table with descriptions
-4. How to run tests
-5. Project structure overview
-6. Link to docs/ folder
-
-Verify all commands work. Do not include placeholder text.
-```
-
----
-
-## Prompt 2: PR Description
-
-```
-Generate a pull request description for the Support Ticket Management System submission.
+Update root README.md for the Support Ticket Management System.
 
 Include:
-1. Summary of what was built (3-5 bullet points)
-2. Changes by area (backend, frontend, database, tests, docs)
-3. Test plan checklist (mapped to acceptance criteria)
-4. Links to key docs (requirements, API contract, test results)
-5. Notes for reviewer (assumptions, known limitations)
+1. Prerequisites (Node 18+, MongoDB 6+)
+2. Clone with -b dev branch
+3. Install backend, frontend, tests
+4. Env setup, db:init, seed, run dev servers
+5. Run tests (30/30 expected)
+6. Environment variable table
+7. Troubleshooting section
 
-Format for docs/pr-description.md. Use checkbox syntax for test plan items.
+No placeholder text. Reference database/setup-notes.md.
 ```
 
 ---
 
-## Prompt 3: AI Usage Summary
+## Prompt 2: PR Description (Core — used)
 
 ```
-Generate a final AI usage summary for the Support Ticket Management System assignment.
+Generate pr-description.md for submission.
+
+Include: summary, features, technical changes, test checklist, AI usage summary, known limitations (no auth, no pagination).
+Map test plan to acceptance criteria.
+```
+
+---
+
+## Prompt 3: AI Usage Summary (Core — used)
+
+```
+Generate final-ai-usage-summary.md.
 
 Document:
-1. Which AI tool was used (Cursor)
-2. Usage by category: planning, code generation, debugging, review, documentation
-3. What AI did well vs. what required human judgment
-4. Key prompts used (reference ai-prompts/ files)
-5. Rough estimate of AI-assisted vs. human-written code per category
-6. Lessons learned about effective AI-assisted development
+1. Cursor usage by lifecycle phase
+2. What AI did well vs what needed human judgment
+3. Accept/change/reject examples (reference iteration-log.md)
+4. What I avoided sharing (secrets, credentials)
+5. Honest assessment of AI limitations
 
-Be transparent and honest. Format for docs/final-ai-usage-summary.md.
+Cross-reference ai-prompts/ files.
 ```
 
 ---
 
-## Prompt 4: Reflection
+## Prompt 4: Reflection (Core — used)
 
 ```
-Help me write a reflection for the Support Ticket Management System assignment.
+Help write reflection.md for the assignment.
 
 Cover:
-1. What went well
-2. Challenges faced and how they were addressed
-3. What I would do differently
-4. Skills developed (technical, process, tooling)
-5. AI tool effectiveness rating (1-5 per aspect)
-6. Time breakdown by phase (planned vs. actual)
+1. What I built (Core scope only)
+2. How I used AI across lifecycle
+3. What AI got wrong
+4. How I validated output
+5. Time allocation (Core ~10h, artifacts ~22h)
+6. Reusable workflow for real projects
 
-Tone: professional but personal. Format for docs/reflection.md.
-I will fill in specific details — provide the structure and guiding questions.
+Professional but personal tone.
 ```
 
 ---
 
-## Prompt 5: Candidate Info
+## Prompt 5: Candidate Info (Core — used)
 
 ```
-Create a candidate info template for docs/candidate-info.md.
-
-Include fields for:
-- Name, email, assignment title, submission date
-- Development environment (IDE, Node version, database, OS)
-- Repository URL, branch, commit hash
-- Notes section for reviewer context
-
-Use table format. Mark personal fields as placeholders to fill in.
+Update candidate-info.md with:
+- Name, role, dates, stack
+- Repository URL (dev branch)
+- Tools used, setup summary, deliverables checklist
+- Link to ai-prompts/ for prompt history
 ```
 
 ---
 
-## Prompt 6: Tool Workflow
+## Prompt 6: Tool Workflow (Core — used)
 
 ```
-Document the development tool workflow for docs/tool-workflow.md.
+Document tool-workflow.md — how Cursor is used across:
+requirements, planning, design, implementation, testing, debugging, review, documentation.
 
-Tools used:
-- Cursor (AI-assisted IDE)
-- Git (version control)
-- Node.js / npm
-- MongoDB
-- Browser DevTools
-
-Phases:
-1. Planning — requirements, API contract, data model
-2. Implementation — backend first, then frontend
-3. Testing & review — automated + manual tests, self-review
-4. Submission — docs, PR description, AI usage summary
-
-Include AI usage guidelines and prompt strategy notes.
-Reference ai-prompts/ folder for stored prompts.
+Include context-setting pattern, validation gates, what not to share with AI.
+Reference ai-prompts/README.md and iteration-log.md.
 ```
 
 ---
 
-## Prompt 7: Sync Docs with Implementation
+## Prompt 7: Sync Docs with Implementation (Core — used)
 
 ```
-The Support Ticket Management System implementation has changed. Update documentation to match.
+Implementation changed. Update docs to match.
 
-Changes made:
-[Describe what changed — new endpoints, schema changes, UI updates, etc.]
-
-Files to update:
-- [ ] docs/api-contract.md
-- [ ] docs/data-model.md
-- [ ] docs/ui-flow.md
-- [ ] docs/acceptance-criteria.md
+Checklist:
+- [ ] api-contract.md
+- [ ] data-model.md
+- [ ] ui-flow.md
+- [ ] acceptance-criteria.md (tick completed items)
 - [ ] README.md
-
-For each file, show only the sections that need updating. Keep unchanged sections as-is.
+- [ ] tasks.md status
 ```
+
+---
+
+## Recorded Session — Submission docs (2026-07-21 – 2026-07-22)
+
+**Prompts used:** 3, 4, 5, 7
+
+**AI draft issues:**
+- Claimed auth was implemented — **incorrect**
+- Generic time estimates — **too vague**
+
+**My decisions:**
+- ✏️ Corrected Core scope in reflection (seed users only)
+- ✏️ Added time allocation table
+- ✏️ Created `ai-prompts/iteration-log.md` for prompt history evidence
+- ✏️ Ticked acceptance criteria checkboxes
+
+**Artifacts:** `reflection.md`, `final-ai-usage-summary.md`, `candidate-info.md`, `acceptance-criteria.md`
+
+**Commit:** `9b550d8`. See `iteration-log.md` Session 9.
 
 ---
 
 ## Usage Notes
 
-- Update documentation as you go — do not leave it all for the end.
-- Run Prompt 7 whenever implementation diverges from the original design docs.
-- Prompts 3 and 4 are for final submission prep.
-- Keep `docs/` and `ai-prompts/` in sync — if you change a prompt, update the corresponding doc template.
+- Update documentation as you go — not only at the end.
+- Run Prompt 7 whenever implementation diverges from design docs.
+- Keep `ai-prompts/` and root lifecycle docs in sync.
+- Prompt history for evaluators: start at `ai-prompts/README.md` → `iteration-log.md`.

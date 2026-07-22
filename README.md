@@ -199,6 +199,8 @@ See `acceptance-criteria.md` for the full checklist.
 | Document | Purpose |
 |----------|---------|
 | `tool-workflow.md` | Part A — AI workflow across lifecycle |
+| `ai-prompts/README.md` | Prompt history index — start here for evaluators |
+| `ai-prompts/iteration-log.md` | Chronological AI session log with accept/change/reject |
 | `database/setup-notes.md` | MongoDB setup and troubleshooting |
 | `tool-specific/cursor-workflow/` | Cursor persistent context and spec |
 | `ai-prompts/` | Prompt history grouped by activity |

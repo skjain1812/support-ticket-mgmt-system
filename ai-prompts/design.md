@@ -1,38 +1,35 @@
 # Design Prompts
 
-Reusable prompts for architecture and design decisions.
+Reusable prompts for architecture and design decisions. **Recorded sessions** at the bottom show real iteration.
+
+> Prompts 1, 3, 4 include Stretch items (auth, pagination) — marked accordingly. Core design used Prompts 2 and 5.
 
 ---
 
-## Prompt 1: System Architecture
+## Prompt 1: System Architecture (Stretch — reference only)
 
 ```
 Design the architecture for a Support Ticket Management System with:
 - React frontend (Vite)
 - Node.js REST API (Express)
 - MongoDB database (Mongoose ODM)
-- JWT authentication with roles: agent, admin
+- JWT authentication with roles: agent, admin  [STRETCH — not in Core]
 
-Provide:
-1. High-level architecture diagram (text or mermaid)
-2. Folder structure for backend/ and frontend/
-3. Key design decisions with rationale
-4. Security considerations (password hashing, input validation, CORS)
-
-Follow existing project conventions in docs/design-notes.md. Do not introduce new frameworks unless justified.
+Provide folder structure, key design decisions, and security considerations.
+Follow design-notes.md. Do not introduce new frameworks unless justified.
 ```
 
 ---
 
-## Prompt 2: Data Model
+## Prompt 2: Data Model (Core — used)
 
 ```
-Design the database schema for a Support Ticket Management System.
+Design the database schema for a Support Ticket Management System (Core).
 
 Entities:
-- Users (agents and admins)
-- Tickets (title, description, status, priority, creator, assignee)
-- Ticket status history (optional audit trail)
+- User — seeded only; fields: name, email, role (no password)
+- Ticket — title, description, priority, status, assignedTo, createdBy, timestamps
+- Comment — ticketId, message, createdBy, createdAt
 
 Requirements:
 - ObjectId primary keys (exposed as strings in API)
@@ -41,96 +38,103 @@ Requirements:
 
 Output:
 1. Mermaid ERD
-2. Mongoose schema definitions with field types and constraints
-3. Sample seed data script (database/seed.js)
+2. Mongoose schema definitions
+3. Sample seed data (database/seed.js)
 
-Format for docs/data-model.md.
+Format for data-model.md.
 ```
 
 ---
 
-## Prompt 3: API Contract
+## Prompt 3: API Contract (Core — adapted)
 
 ```
-Design a REST API contract for the Support Ticket Management System.
+Design a REST API contract for the Support Ticket Management System (Core).
 
-Endpoints needed:
-- POST /auth/login
-- POST /auth/register (admin only)
-- GET /tickets (with filters: status, priority, assigneeId, search, pagination)
-- POST /tickets
-- GET /tickets/:id
-- PATCH /tickets/:id
-- PATCH /tickets/:id/assign (admin only)
-- GET /users (admin only)
+Endpoints:
+- GET /users — list seed users (for assignee/createdBy dropdowns)
+- GET /tickets — list with search + status filter
+- POST /tickets — create (title required)
+- GET /tickets/:id — detail with comments
+- PATCH /tickets/:id — update fields (not status)
+- PATCH /tickets/:id/status — state machine transitions only
+- POST /api/tickets/:id/comments — add comment
 
-For each endpoint, specify:
-- HTTP method and path
-- Request body / query params
-- Success response (status code + JSON shape)
-- Error responses (400, 401, 403, 404)
-- Auth requirements
+Error format: { "error": "...", "details": [] }
+No authentication in Core.
 
-Use consistent error format: { "error": "...", "details": [] }
-
-Output for docs/api-contract.md.
+Output for api-contract.md.
 ```
 
 ---
 
-## Prompt 4: UI Flow Design
+## Prompt 4: UI Flow Design (Core — adapted)
 
 ```
-Design the UI flows for a Support Ticket Management System.
+Design UI flows for Core scope (no login page).
 
 Screens:
-- Login
-- Ticket list (with filters and search)
-- Create ticket
-- Ticket detail (status update, assignment)
-- User management (admin only)
+- Ticket list (/tickets) — search + status filter
+- Create ticket (/tickets/new)
+- Ticket detail (/tickets/:id) — edit fields, status change, comments
 
-For each screen, describe:
-1. Route path
-2. UI elements
-3. User interactions
-4. API calls triggered
-5. Loading, empty, and error states
+For each screen: route, UI elements, API calls, loading/empty/error states.
 
-Include mermaid sequence diagrams for login and status change flows.
-
-Output for docs/ui-flow.md.
+Output for ui-flow.md.
 ```
 
 ---
 
-## Prompt 5: Status State Machine
+## Prompt 5: Status State Machine (Core — used)
 
 ```
-Define the ticket status state machine for a Support Ticket Management System (Core).
+Define the ticket status state machine (Core — non-negotiable).
 
 Statuses: open, in_progress, resolved, closed, cancelled
 
-Valid transitions (Core — non-negotiable):
-- open → in_progress
-- open → cancelled
-- in_progress → resolved
-- in_progress → cancelled
+Valid transitions:
+- open → in_progress, cancelled
+- in_progress → resolved, cancelled
 - resolved → closed
 
-All other transitions are invalid. closed and cancelled are terminal.
+All other transitions invalid. closed and cancelled are terminal.
 
 Provide:
-1. Valid transitions diagram (mermaid or ASCII)
-2. Function signature for isValidTransition(from, to) → boolean
+1. Transition diagram (mermaid or ASCII)
+2. isValidTransition(from, to) signature
 3. Error message format for invalid transitions
-4. Note: this is the signature judgment piece — backend must enforce, frontend supplements
 ```
+
+---
+
+## Recorded Session — Data model field names (2026-07-15)
+
+**Prompt used:** Prompt 2 (Data Model)
+
+**AI suggested:** `assignee_id`, optional `TicketStatusHistory` collection.
+
+**My decision:**
+- ✏️ Changed to `assignedTo`, `createdBy` (camelCase, matches brief)
+- ❌ Rejected status history table (Stretch complexity)
+
+**Outcome:** `data-model.md`, Mongoose models. See `iteration-log.md` Session 2.
+
+---
+
+## Recorded Session — State machine (2026-07-15)
+
+**Prompt used:** Prompt 5 (Status State Machine)
+
+**AI suggested:** `open → closed` shortcut transition.
+
+**My decision:** ❌ Rejected — only the 5 valid paths from the brief are allowed.
+
+**Outcome:** `backend/src/utils/statusTransitions.js`. See `iteration-log.md` Session 3.
 
 ---
 
 ## Usage Notes
 
 - Finalize data model and API contract **before** implementation.
-- Cross-check design output against docs/requirements-analysis.md.
-- Update docs/design-notes.md with any decisions made during AI-assisted design.
+- Cross-check design output against `requirements-analysis.md`.
+- Update `design-notes.md` with decisions made during AI-assisted design.

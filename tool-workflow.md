@@ -130,7 +130,7 @@ I share enough context for accurate output (spec, contract, error logs) but not 
 1. **Persistent project context** — Maintain `project-context.md` and `spec.md` in the repo; update when requirements change.
 2. **Spec-driven development** — Define API contract and acceptance criteria before implementation; link them in every AI prompt.
 3. **Phased delivery** — Backend + tests first, frontend second; one feature per PR.
-4. **Prompt library** — Reuse and refine prompts in `ai-prompts/` across sprints.
+4. **Prompt library** — Reuse and refine prompts in `ai-prompts/` across sprints; record iterations in `ai-prompts/iteration-log.md`.
 5. **Mandatory validation gate** — No AI-generated code merges without tests passing and human review of business logic.
 6. **Cursor rules** — Encode team standards in `cursor-rules-or-instructions.md` so AI output matches conventions.
 7. **Transparent AI usage** — Document what AI generated vs what humans wrote; critical for audit and knowledge transfer.

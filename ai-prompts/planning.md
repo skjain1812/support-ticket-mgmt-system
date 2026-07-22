@@ -1,6 +1,8 @@
 # Planning Prompts
 
-Reusable prompts for the planning phase of the Support Ticket Management System.
+Reusable prompts for the planning phase. **Recorded sessions** at the bottom show real iteration during this assignment.
+
+> **Core scope reminder:** Authentication, user CRUD, and pagination are Stretch — do not include in Phase 1 planning.
 
 ---
 
@@ -12,16 +14,16 @@ You are helping me plan a Support Ticket Management System assignment.
 Context:
 - Full-stack web app for support teams to create, track, assign, and resolve tickets
 - Stack: Node.js backend, React frontend, MongoDB database (Mongoose)
-- Existing docs: docs/requirements-analysis.md, docs/acceptance-criteria.md
+- Existing docs: requirements-analysis.md, acceptance-criteria.md (repo root)
 
 Task:
-1. Review the functional requirements (ticket CRUD, auth, assignment, search/filter).
-2. Break them into Must / Should / Could priorities.
+1. Review the functional requirements (ticket CRUD, comments, search/filter, state machine).
+2. Separate Core (mandatory) from Stretch (optional: auth, user CRUD, pagination, Docker).
 3. Identify dependencies between features.
 4. List assumptions and out-of-scope items.
 5. Output a phased implementation plan with time estimates.
 
-Keep the plan realistic for a single-developer assignment. Do not add features beyond the stated requirements.
+Keep the plan realistic for a single-developer assignment. Do not add Stretch features to Core phases.
 ```
 
 ---
@@ -29,13 +31,14 @@ Keep the plan realistic for a single-developer assignment. Do not add features b
 ## Prompt 2: Implementation Plan
 
 ```
-Based on docs/requirements-analysis.md and docs/acceptance-criteria.md, create a phased implementation plan for the Support Ticket Management System.
+Based on requirements-analysis.md and acceptance-criteria.md, create a phased implementation plan.
 
-Phases should follow this order:
-1. Foundation — project setup, database, authentication
-2. Core Ticket CRUD — API + frontend for create, list, detail, update
-3. Assignment & Filtering — admin assignment, search/filter UI
-4. Testing & Polish — tests, error handling, documentation
+Phases should follow this order (Core only):
+1. Foundation — project setup, database, seed data (no auth)
+2. Backend API — ticket CRUD, comments, status state machine, search/filter
+3. Frontend UI — list, create, detail pages with error states
+4. Testing — mandatory state-machine integration tests
+5. Review & documentation — self-review, reflection, prompt history
 
 For each phase, provide:
 - Goal statement
@@ -44,6 +47,7 @@ For each phase, provide:
 - Dependencies on prior phases
 
 Output in markdown suitable for implementation-plan.md.
+Target: ~8–12 focused hours for Core implementation; rest of week on lifecycle artifacts.
 ```
 
 ---
@@ -54,9 +58,9 @@ Output in markdown suitable for implementation-plan.md.
 Review the implementation plan for a Support Ticket Management System (REST API, React SPA, MongoDB).
 
 Identify:
-1. Technical risks (auth complexity, schema changes, CORS, etc.)
-2. Scope creep risks
-3. Time estimation risks
+1. Technical risks (state machine enforcement, schema changes, CORS, test DB isolation)
+2. Scope creep risks (auth, pagination, over-polished UI)
+3. Time estimation risks (spending too long on Core vs lifecycle docs)
 
 For each risk, suggest a mitigation strategy.
 
@@ -71,20 +75,34 @@ Keep suggestions practical for an assignment-sized project.
 Map each functional requirement in requirements-analysis.md to testable acceptance criteria.
 
 Format each criterion as:
-- Unique ID (AC-01, AC-02, ...)
-- Clear, testable statement
+- Clear, testable statement (checkbox format)
 - Link to requirement ID (FR-01, etc.)
-- Pass/fail checkbox
+- Note if verified by test, manual check, or both
 
-Cover: authentication, ticket creation, list/search, status updates, assignment, API error handling, and quality gates.
+Cover Core only: ticket CRUD, comments, search/filter, state machine, validation, persistence, integration tests.
 
-Output for acceptance-criteria.md.
+Output for acceptance-criteria.md and tool-specific/cursor-workflow/acceptance-criteria.md.
 ```
+
+---
+
+## Recorded Session — Scope control (2026-07-14)
+
+**Prompt used:** Prompt 1 (Requirements Breakdown)
+
+**AI suggested:** Phase 1 including JWT authentication and user registration.
+
+**My decision:** ❌ Rejected auth from Core phases. Moved to Stretch in `requirements-analysis.md`.
+
+**Why:** Assignment brief states users are seed data only for Core. Protecting artifact time (reflection, prompt history, debugging notes) over expanding the application.
+
+**Outcome:** `implementation-plan.md` Phase 1 = setup + seed only. See `iteration-log.md` Session 1.
 
 ---
 
 ## Usage Notes
 
 - Run planning prompts **before** writing application code.
-- Save AI output to the corresponding root-level file and review/edit before proceeding.
-- Reference `implementation-plan.md` when starting each development phase.
+- Save AI output to root-level files and review/edit before proceeding.
+- Reference `implementation-plan.md` and `tool-specific/cursor-workflow/tasks.md` when starting each phase.
+- Log accept/change/reject decisions in `iteration-log.md`.
